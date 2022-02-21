@@ -1,0 +1,31 @@
+{
+    "manifest_version": 2,
+    "name": "왁물원 플러스",
+    "version": "1.0",
+
+    "description": "더 편리한 왁물원을 위한 확장 프로그램입니다.",
+    "icons": {
+        "64": "icons/icon.png"
+    },
+
+    "applications": {
+        "gecko": {
+            "id": "{bcabe7a6-fdf0-4202-a672-1501933881e6}"
+        }
+    },
+
+    "background": {
+        "scripts": ["background.js"]
+    },
+    "content_scripts": [
+        {
+            "matches": ["*://cafe.naver.com/steamindiegame/*"],
+            "all_frames": true,
+            "js": ["content.js"]
+        }
+    ],
+    "permissions": [
+        "*://cafe.naver.com/steamindiegame/*",
+        "storage"
+    ]
+}
