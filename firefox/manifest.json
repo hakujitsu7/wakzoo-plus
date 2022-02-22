@@ -19,13 +19,16 @@
     },
     "content_scripts": [
         {
-            "matches": ["*://cafe.naver.com/steamindiegame/*"],
+            "matches": ["*://cafe.naver.com/*"],
             "all_frames": true,
             "js": ["content.js"]
         }
     ],
     "permissions": [
-        "*://cafe.naver.com/steamindiegame/*",
-        "storage"
+        "*://cafe.naver.com/*",
+        "storage",
+        "tabs",
+        "webNavigation",
+        "webRequest"
     ]
 }
