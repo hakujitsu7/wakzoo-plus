@@ -21,11 +21,12 @@
         {
             "matches": ["*://cafe.naver.com/*"],
             "all_frames": true,
-            "js": ["content.js"]
+            "js": ["cafe-apis.js", "content.js"]
         }
     ],
     "permissions": [
         "*://cafe.naver.com/*",
+        "*://apis.naver.com/*",
         "storage",
         "tabs",
         "webNavigation",
