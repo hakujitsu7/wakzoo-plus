@@ -1,18 +1,18 @@
-async function getArticle(articleId) {
+export async function getArticle(articleId) {
     const response = await fetch(`https://apis.naver.com/cafe-web/cafe-articleapi/v2/cafes/27842958/articles/${articleId}`, { credentials: 'include' });
     const json = await response.json();
 
     return json.result.article;
 }
 
-async function getArticleList(menuId, page, perPage) {
+export async function getArticleList(menuId, page, perPage) {
     const response = await fetch(`https://apis.naver.com/cafe-web/cafe2/ArticleList.json?search.clubid=27842958&search.menuid=${menuId}&search.page=${page}&search.perPage=${perPage}`, { credentials: 'include' });
     const json = await response.json();
 
     return json.message.result.articleList;
 }
 
-async function getArticleListAndBlockMemberList(menuId, page, perPage) {
+export async function getArticleListAndBlockMemberList(menuId, page, perPage) {
     const response = await fetch(`https://apis.naver.com/cafe-web/cafe2/ArticleList.json?search.clubid=27842958&search.menuid=${menuId}&search.page=${page}&search.perPage=${perPage}`, { credentials: 'include' });
     const json = await response.json();
 
@@ -22,14 +22,14 @@ async function getArticleListAndBlockMemberList(menuId, page, perPage) {
     };
 }
 
-async function getBlockMemberList() {
+export async function getBlockMemberList() {
     const response = await fetch('https://apis.naver.com/cafe-web/cafe-cafeinfo-api/v1.0/cafes/27842958/block-members', { credentials: 'include' });
     const json = await response.json();
 
     return json.result;
 }
 
-async function getCafeMemberArticleList(memberId, perPage, page) {
+export async function getCafeMemberArticleList(memberId, perPage, page) {
     const memberKey = await getMemberKeyByMemberId(memberId);
 
     const response = await fetch(`https://apis.naver.com/cafe-web/cafe-mobile/CafeMemberNetworkArticleList?search.cafeId=27842958&search.memberKey=${memberKey}&search.perPage=${perPage}&search.page=${page}`, { credentials: 'include' });
@@ -38,7 +38,7 @@ async function getCafeMemberArticleList(memberId, perPage, page) {
     return json.message.result.articleList;
 }
 
-async function getCafeMemberCommentList(memberId, perPage, page) {
+export async function getCafeMemberCommentList(memberId, perPage, page) {
     const memberKey = await getMemberKeyByMemberId(memberId);
 
     const response = await fetch(`https://apis.naver.com/cafe-web/cafe-mobile/CafeMemberNetworkReplyList?search.clubid=27842958&search.memberKey=${memberKey}&search.perPage=${perPage}&search.page=${page}`, { credentials: 'include' });
@@ -47,7 +47,7 @@ async function getCafeMemberCommentList(memberId, perPage, page) {
     return json.message.result.articleList;
 }
 
-async function getCafeMemberLikeItList(memberId, perPage, likeItTimestamp) {
+export async function getCafeMemberLikeItList(memberId, perPage, likeItTimestamp) {
     const response = await fetch(`https://apis.naver.com/cafe-web/cafe-mobile/CafeMemberLikeItListPC?search.cafeId=27842958&search.memberId=${memberId}&search.perPage=${perPage}&search.likeItTimestamp=${likeItTimestamp}`, { credentials: 'include' });
     const json = await response.json();
 
@@ -58,28 +58,28 @@ async function getCafeMemberLikeItList(memberId, perPage, likeItTimestamp) {
     };
 }
 
-async function getCafeMemberInfo() {
+export async function getCafeMemberInfo() {
     const response = await fetch('https://apis.naver.com/cafe-web/cafe2/CafeMemberInfo.json?cafeId=27842958', { credentials: 'include' });
     const json = await response.json();
 
     return json.message.result;
 }
 
-async function getCafeMemberProfile(memberId) {
+export async function getCafeMemberProfile(memberId) {
     const response = await fetch(`https://apis.naver.com/cafe-web/cafe-mobile/CafeMemberProfile?cafeId=27842958&memberId=${memberId}`, { credentials: 'include' });
     const json = await response.json();
 
     return json.message.result;
 }
 
-async function getCafeMemberStatus(memberId) {
+export async function getCafeMemberStatus(memberId) {
     const response = await fetch(`https://apis.naver.com/cafe-web/cafe-mobile/CafeMemberStatus?cafeId=27842958&memberId=${memberId}`, { credentials: 'include' });
     const json = await response.json();
 
     return json.message.result;
 }
 
-async function getCommentList(articleId, page) {
+export async function getCommentList(articleId, page) {
     const response = await fetch(`https://apis.naver.com/cafe-web/cafe-articleapi/cafes/27842958/articles/${articleId}/comments/pages/${page}`, { credentials: 'include' });
     const json = await response.json();
 
@@ -89,7 +89,7 @@ async function getCommentList(articleId, page) {
     };
 }
 
-async function getCommentListAll(articleId) {
+export async function getCommentListAll(articleId) {
     const commentList = await getCommentList(articleId, 1);
 
     const pageCount = Math.ceil(commentList.commentCount / 100);
@@ -103,7 +103,7 @@ async function getCommentListAll(articleId) {
     return commentListAll;
 }
 
-async function getMemberIdByNickname(nickname) {
+export async function getMemberIdByNickname(nickname) {
     const response = await fetch(`https://apis.naver.com/cafe-web/cafe-talk/v3/categories/27842958/members?query=${encodeURIComponent(nickname)}`, { credentials: 'include' });
     const json = await response.json();
 
@@ -121,13 +121,13 @@ async function getMemberIdByNickname(nickname) {
     return memberList.find(member => member.nickname === nickname)?.memberId;
 }
 
-async function getMemberKeyByMemberId(memberId) {
+export async function getMemberKeyByMemberId(memberId) {
     const cafeMemberProfile = await getCafeMemberProfile(memberId);
 
     return cafeMemberProfile?.memberKey;
 }
 
-async function getPopularArticleList() {
+export async function getPopularArticleList() {
     const response = await fetch('https://apis.naver.com/cafe-web/cafe2/WeeklyPopularArticleList.json?cafeId=27842958', { credentials: 'include' });
     const json = await response.json();
 

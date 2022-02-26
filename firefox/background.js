@@ -25,7 +25,9 @@ chrome.webNavigation.onCommitted.addListener(
     details => {
         if (details.transitionType === "reload") {
             ifWakzoo(details.tabId, () => {
-                chrome.tabs.update(details.tabId, { url: currentLocation[details.tabId] });
+                chrome.tabs.update(details.tabId, {
+                    url: currentLocation[details.tabId]
+                });
             });
         }
     },
