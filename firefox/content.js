@@ -5,7 +5,7 @@ function isWakzoo() {
 }
 
 function getUrlSearchParams() {
-    let urlSearchParams = new URLSearchParams(location.search);
+    const urlSearchParams = new URLSearchParams(location.search);
 
     const urlSearchParamsObject = {}
 
@@ -15,10 +15,10 @@ function getUrlSearchParams() {
     while (!entryObj.done) {
         const [key, value] = entryObj.value;
         urlSearchParamsObject[key.toLowerCase()] = value;
-        
+
         entryObj = entries.next();
     }
-    
+
     return urlSearchParamsObject;
 }
 
@@ -28,7 +28,6 @@ function getUrlSearchParams() {
 
         }
         else {
-            console.log(location.href);
             if (location.href.includes("MyCafeIntro.nhn")) {
 
             }
@@ -36,9 +35,9 @@ function getUrlSearchParams() {
                 const urlSearchParams = getUrlSearchParams();
 
                 const boardType = urlSearchParams['search.boardtype'] || 'L';
-                const menuId = urlSearchParams['search.menuid'] || '',
-                const page = urlSearchParams['search.page'] || '1',
-                const perPage = urlSearchParams['search.userdisplay'] || '15'
+                const menuId = urlSearchParams['search.menuid'] || '';
+                const page = urlSearchParams['search.page'] || '1';
+                const perPage = urlSearchParams['search.userdisplay'] || '15';
 
                 if (boardType === "L") {
                     const articleList = await getArticleListAndBlockMemberList(menuId, page, perPage);
