@@ -50,7 +50,7 @@ export async function main() {
                 if (boardType === 'L') {
                     const menuId = urlSearchParams['search.menuid'] || '';
                     const page = urlSearchParams['search.page'] || '1';
-                    const perPage = urlSearchParams['search.userdisplay'] || '15';
+                    const perPage = urlSearchParams['userdisplay'] || '15';
 
                     makeThumbnails(menuId, page, perPage);
                 }
