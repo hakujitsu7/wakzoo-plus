@@ -1,5 +1,6 @@
 import { blockArticles } from './block.js';
 import { getCafeMemberInfo } from './cafe-apis.js';
+import { makeThumbnails } from './thumbnail.js';
 
 function isWakzoo() {
     const signatures = ['steamindiegame', '27842958'];
@@ -41,9 +42,18 @@ export async function main() {
                 blockArticles(null);
             }
             else if (location.href.includes('/ArticleList.nhn')) {
-                const urlSearchParams =  getUrlSearchParams();
+                const urlSearchParams = getUrlSearchParams();
+                const boardType = urlSearchParams['search.boardtype'] || 'L';
 
-                blockArticles(urlSearchParams['search.boardtype']);
+                blockArticles(boardType);
+
+                if (boardType === 'L') {
+                    const menuId = urlSearchParams['search.menuid'] || '';
+                    const page = urlSearchParams['search.page'] || '1';
+                    const perPage = urlSearchParams['search.userdisplay'] || '15';
+
+                    makeThumbnails(menuId, page, perPage);
+                }
             }
             else if (location.href.includes('/ArticleRead.nhn')) {
 

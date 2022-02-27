@@ -1,0 +1,27 @@
+.inner_list {
+    position: relative!important;
+}
+
+.list-i-thumb {
+    display: none;
+}
+
+tr:hover .list-i-thumb {
+    background-color: white;
+
+    display: block;
+    position: absolute;
+
+    top: 31px;
+    left: 0px;
+
+    width: 100px;
+    height: 100px;
+
+    padding: 8px;
+
+    box-shadow: 0 0 6px rgb(0 0 0 / 25%);
+    border-radius: 8px;
+
+    z-index: 999;
+}
