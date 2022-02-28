@@ -1,5 +1,6 @@
 import { blockArticles } from './block.js';
 import { getCafeMemberInfo } from './cafe-apis.js';
+import { addArticleValidation, addCommentValidation } from './validate.js';
 import { makeThumbnails } from './thumbnail.js';
 
 function isWakzoo() {
@@ -24,7 +25,7 @@ function getUrlSearchParams() {
 
     while (!entryObj.done) {
         const [key, value] = entryObj.value;
-        urlSearchParamsObject[key.toLowerCase()] = value;
+        urlSearchParamsObject[key.toLowerCase()] = decodeURIComponent(value);
 
         entryObj = entries.next();
     }
@@ -34,14 +35,18 @@ function getUrlSearchParams() {
 
 export async function main() {
     if (isWakzoo() && await isCafeMember()) {
-        if (window.self === window.top) {
+        const url = decodeURIComponent(location.href);
 
+        if (window.self === window.top) {
+            if (url.includes('/articles/write')) {
+                addArticleValidation();
+            }
         }
         else {
-            if (location.href.includes('/MyCafeIntro.nhn')) {
+            if (url.includes('/MyCafeIntro.nhn')) {
                 blockArticles(null);
             }
-            else if (location.href.includes('/ArticleList.nhn')) {
+            else if (url.includes('/ArticleList.nhn')) {
                 const urlSearchParams = getUrlSearchParams();
                 const boardType = urlSearchParams['search.boardtype'] || 'L';
 
@@ -55,8 +60,8 @@ export async function main() {
                     makeThumbnails(menuId, page, perPage);
                 }
             }
-            else if (location.href.includes('/ArticleRead.nhn')) {
-
+            else if (url.includes('/ArticleRead.nhn')) {
+                addCommentValidation();
             }
         }
     }

@@ -103,6 +103,27 @@ export async function getCommentListAll(articleId) {
     return commentListAll;
 }
 
+export async function getCommentListRecent(articleId, recentPageCount) {
+    const commentList = await getCommentList(articleId, 1);
+
+    const pageCount = Math.ceil(commentList.commentCount / 100);
+    const commentListRecent = [];
+
+    let startPage = Math.max(pageCount - recentPageCount + 1, 1);
+
+    if (startPage === 1) {
+        commentListRecent.push(...commentList.commentList);
+        startPage++;
+    }
+
+    for (let page = startPage; page <= pageCount; page++) {
+        const commentList = await getCommentList(articleId, page);
+        commentListRecent.push(...commentList.commentList);
+    }
+
+    return commentListRecent;
+}
+
 export async function getMemberIdByNickname(nickname) {
     const response = await fetch(`https://apis.naver.com/cafe-web/cafe-talk/v3/categories/27842958/members?query=${encodeURIComponent(nickname)}`, { credentials: 'include' });
     const json = await response.json();
@@ -125,6 +146,13 @@ export async function getMemberKeyByMemberId(memberId) {
     const cafeMemberProfile = await getCafeMemberProfile(memberId);
 
     return cafeMemberProfile?.memberKey;
+}
+
+export async function getMenuList() {
+    const response = await fetch('https://apis.naver.com/cafe-web/cafe-cafeinfo-api/v1.0/cafes/27842958/editor/menus', { credentials: 'include' });
+    const json = await response.json();
+
+    return json.result;
 }
 
 export async function getPopularArticleList() {
