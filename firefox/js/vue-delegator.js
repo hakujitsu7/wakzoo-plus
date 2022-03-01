@@ -97,21 +97,21 @@ export function getVue(element) {
     });
 }
 
-export function getPropertyOfVue(vue, ...path) {
+export function getPropertyOfVue(vueId, ...path) {
     return new Promise(resolve => {
         addOnetimeEventListener('VueDelegator-GetPropertyOfVue-Response', event => {
             resolve(JSON.parse(event.detail));
         });
         dispatchEvent(new CustomEvent('VueDelegator-GetPropertyOfVue', {
             detail: JSON.stringify({
-                vueId: vue,
+                vueId: vueId,
                 path: path,
             })
         }));
     });
 }
 
-export function callMethodOfVue(vue, path, args = []) {
+export function callMethodOfVue(vueId, path, args = []) {
     let method;
 
     if (typeof path === 'string') {
@@ -128,7 +128,7 @@ export function callMethodOfVue(vue, path, args = []) {
         });
         dispatchEvent(new CustomEvent('VueDelegator-CallMethodOfVue', {
             detail: JSON.stringify({
-                vueId: vue,
+                vueId: vueId,
                 path: path,
                 method: method,
                 args: args,
