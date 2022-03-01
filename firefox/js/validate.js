@@ -1,4 +1,5 @@
 import { getArticleList, getCafeMemberInfo, getCommentListRecent } from './cafe-apis.js';
+import { installVueDelegator, getPropertyOfVue, getVue, callMethodOfVue } from './vue-delegator.js';
 
 const limits = {
     1: {
@@ -21,13 +22,13 @@ const limits = {
     },
 };
 
-async function validateArticle() {
-    const articleWriteVue = document.querySelector('.ArticleWrite').__vue__;
+export async function validateArticle() {
+    const articleWriteVue = await getVue(document.querySelector('.ArticleWrite'));
 
-    const menuId = articleWriteVue.article.menuId;
-    const headId = articleWriteVue.article.headId;
+    const menuId = await getPropertyOfVue(articleWriteVue, 'article', 'menuId');
+    const headId = await getPropertyOfVue(articleWriteVue, 'article', 'headId');
 
-    const useHead = articleWriteVue.menus.find(menu => menu.menuId === menuId).useHead;
+    const useHead = !!document.querySelector('.column_category .select_option li');
 
     if (useHead && !headId) {
         return alert('말머리를 선택하세요.');
@@ -54,19 +55,19 @@ async function validateArticle() {
     return true;
 }
 
-async function validateComment() {
-    const articleVue = document.querySelector('.Article').__vue__;
+export async function validateComment() {
+    const articleVue = await getVue(document.querySelector('.Article'));
 
-    const articleId = articleVue.articleId;
-    const menuId = articleVue.menuId;
+    const articleId = await getPropertyOfVue(articleVue, 'articleId');
+    const menuId = await getPropertyOfVue(articleVue, 'menuId');
 
     const commentLimit = limits[menuId]?.commentLimit;
 
     if (commentLimit) {
         const commentList = await getCommentListRecent(articleId, 1);
 
-        const commentWriterVue = document.querySelector('.CommentWriter').__vue__;
-        const memberId = commentWriterVue.userId;
+        const commentWriterVue = await getVue(document.querySelector('.CommentWriter'));
+        const memberId = await getPropertyOfVue(commentWriterVue, 'userId');
 
         const commentCount = commentList.filter(comment => comment.writer.id === memberId).length;
 
@@ -81,42 +82,55 @@ async function validateComment() {
     return true;
 }
 
-export async function addArticleValidation() {
-    const observer = setInterval(() => {
+export function addArticleValidation() {
+    installVueDelegator();
+
+    const observer = new MutationObserver(async () => {
         const articleWrite = document.querySelector('.ArticleWrite');
         const registerButton = document.querySelector('a.BaseButton');
 
-        const articleWriteVue = articleWrite.__vue__;
-        const registerButtonVue = registerButton.__vue__;
+        if (articleWrite && registerButton) {
+            observer.disconnect();
 
-        if (articleWriteVue && registerButtonVue) {
-            clearInterval(timer);
+            const articleWriteVue = await getVue(articleWrite);
+            const registerButtonVue = await getVue(registerButton);
 
-            registerButtonVue.$off();
+            await callMethodOfVue(registerButtonVue, '$off');
 
             registerButton.addEventListener('click', async () => {
-                if (articleWriteVue.validateBeforeSubmit() && await validateArticle()) {
-                    articleWriteVue.clickUploadArticle();
+                if (await callMethodOfVue(articleWriteVue, 'validateBeforeSubmit') && await validateArticle()) {
+                    callMethodOfVue(articleWriteVue, 'clickUploadArticle');
                 }
             });
         }
-    }, 100);
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+    });
 }
 
-export async function addCommentValidation() {
-    const timer = setInterval(() => {
+export function addCommentValidation() {
+    installVueDelegator();
+
+    const observer = new MutationObserver(async () => {
         const commentWriter = document.querySelector('.CommentWriter');
         const registerButton = document.querySelector('.btn_register');
 
-        const commentWriterVue = commentWriter.__vue__;
+        if (commentWriter && registerButton) {
+            observer.disconnect();
 
-        if (commentWriterVue && registerButton) {
-            clearInterval(timer);
+            const commentWriterVue = await getVue(commentWriter);
 
             registerButton.parentElement.addEventListener('click', async () => {
-                console.log('%ccalled', 'color: red;');
-                if (commentWriterVue.canSubmit() && await validateComment()) {
-                    commentWriterVue.submit();
+                if (await callMethodOfVue(commentWriterVue, 'canSubmit')) {
+                    if (await validateComment()) {
+                        callMethodOfVue(commentWriterVue, 'submit');
+                    }
+                }
+                else {
+                    alert('내용을 입력해주세요');
+                    callMethodOfVue(commentWriterVue, ['$refs', 'inputArea', 'focus']);
                 }
             }, true);
 
@@ -124,5 +138,9 @@ export async function addCommentValidation() {
                 event.stopPropagation();
             }, true);
         }
-    }, 100);
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+    });
 }
