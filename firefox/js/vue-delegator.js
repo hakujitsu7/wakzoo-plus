@@ -1,5 +1,74 @@
-function addOnetimeEventListener(type, listener) {
-    addEventListener(type, listener, { once: true });
+function vueDelegator() {
+    const vues = [];
+
+    addEventListener('VueDelegator-GetVue', event => {
+        const vue = event.detail?.__vue__;
+        let vueId = undefined;
+
+        vueId = vues.indexOf(vue);
+
+        if (vue && vueId < 0) {
+            vueId = vues.length;
+            vues[vueId] = vue;
+        }
+
+        dispatchEvent(new CustomEvent('VueDelegator-GetVue-Response', {
+            detail: vueId
+        }));
+    });
+
+    addEventListener('VueDelegator-GetPropertyOfVue', event => {
+        const detail = JSON.parse(event.detail);
+
+        let value = vues[detail.vueId];
+
+        for (const name of detail.path) {
+            if (!value) {
+                break;
+            }
+            value = value[name];
+        }
+
+        try {
+            value = JSON.stringify(value);
+        }
+        catch (error) {
+            value = error.toString();
+        }
+
+        dispatchEvent(new CustomEvent('VueDelegator-GetPropertyOfVue-Response', {
+            detail: value
+        }));
+    });
+
+    addEventListener('VueDelegator-CallMethodOfVue', event => {
+        const detail = JSON.parse(event.detail);
+
+        let value = vues[detail.vueId];
+        let result = undefined;
+
+        for (const name of detail.path) {
+            if (!value) {
+                break;
+            }
+            value = value[name];
+        }
+
+        if (typeof value[detail.method] === 'function') {
+            result = value[detail.method](...detail.args);
+        }
+
+        try {
+            result = JSON.stringify(result);
+        }
+        catch (error) {
+            result = JSON.stringify(error.toString());
+        }
+
+        dispatchEvent(new CustomEvent('VueDelegator-CallMethodOfVue-Response', {
+            detail: result
+        }));
+    });
 }
 
 export function installVueDelegator() {
@@ -7,84 +76,14 @@ export function installVueDelegator() {
         const script = document.createElement('script');
 
         script.id = 'WakzooPlus-VueDelegator';
-        script.textContent =
-            `(function () {
-                function uuid() {
-                    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-                        const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-                        return v.toString(16);
-                    });
-                }
-
-                const vues = {};
-
-                addEventListener('VueDelegator-GetVue', event => {
-                    const vueId = uuid();
-
-                    vues[vueId] = event.detail.__vue__;
-
-                    dispatchEvent(new CustomEvent('VueDelegator-GetVue-Response', {
-                        detail: vueId
-                    }));
-                });
-
-                addEventListener('VueDelegator-GetPropertyOfVue', event => {
-                    const detail = JSON.parse(event.detail);
-
-                    let value = vues[detail.vueId];
-
-                    for (const name of detail.path) {
-                        if (!value) {
-                            break;
-                        }
-                        value = value[name];
-                    }
-
-                    try {
-                        value = JSON.stringify(value);
-                    }
-                    catch (error) {
-                        value = error.toString();
-                    }
-
-                    dispatchEvent(new CustomEvent('VueDelegator-GetPropertyOfVue-Response', {
-                        detail: value
-                    }));
-                });
-
-                addEventListener('VueDelegator-CallMethodOfVue', event => {
-                    const detail = JSON.parse(event.detail);
-
-                    let value = vues[detail.vueId];
-
-                    for (const name of detail.path) {
-                        if (!value) {
-                            break;
-                        }
-                        value = value[name];
-                    }
-
-                    let result = undefined;
-
-                    if (typeof value[detail.method] === 'function') {
-                        result = value[detail.method](...detail.args);
-                    }
-
-                    try {
-                        result = JSON.stringify(result);
-                    }
-                    catch (error) {
-                        result = JSON.stringify(error.toString());
-                    }
-
-                    dispatchEvent(new CustomEvent('VueDelegator-CallMethodOfVue-Response', {
-                        detail: result
-                    }));
-                });
-            })();`;
+        script.textContent = `(${vueDelegator})();`;
 
         document.body.appendChild(script);
     }
+}
+
+function addOnetimeEventListener(type, listener) {
+    addEventListener(type, listener, { once: true });
 }
 
 export function getVue(element) {

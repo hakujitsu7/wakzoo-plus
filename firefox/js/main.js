@@ -1,7 +1,8 @@
 import { blockArticles } from './block.js';
 import { getCafeMemberInfo } from './cafe-apis.js';
-import { addArticleValidation, addCommentValidation } from './validate.js';
 import { makeThumbnails } from './thumbnail.js';
+import { addArticleValidation, addCommentValidation } from './validate.js';
+import { installVueDelegator } from './vue-delegator.js';
 
 function isWakzoo() {
     const signatures = ['steamindiegame', '27842958'];
@@ -39,6 +40,8 @@ export async function main() {
 
         if (window.self === window.top) {
             if (url.includes('/articles/write')) {
+                installVueDelegator();
+
                 addArticleValidation();
             }
         }
@@ -61,6 +64,8 @@ export async function main() {
                 }
             }
             else if (url.includes('/ArticleRead.nhn')) {
+                installVueDelegator();
+
                 addCommentValidation();
             }
         }

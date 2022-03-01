@@ -1,6 +1,6 @@
 function ifWakzoo(tabId, callback) {
     chrome.tabs.get(tabId, tab => {
-        const signatures = ["steamindiegame", "27842958"];
+        const signatures = ['steamindiegame', '27842958'];
 
         if (signatures.some(signature => tab.url.includes(signature))) {
             callback();
@@ -8,28 +8,49 @@ function ifWakzoo(tabId, callback) {
     });
 }
 
-const currentLocation = {};
+function isSameUrl(lhs, rhs) {
+    const lhsUrl = new URL(lhs);
+    const rhsUrl = new URL(rhs);
+
+    const lhsIframeUrl = lhsUrl.searchParams.get('iframe_url') || lhsUrl.searchParams.get('iframe_url_utf8');
+    const rhsIframeUrl = rhsUrl.searchParams.get('iframe_url') || rhsUrl.searchParams.get('iframe_url_utf8');
+
+    const lhsFilename = lhsUrl.pathname.substring(lhsUrl.pathname.lastIndexOf('/'));
+    const rhsFilename = rhsUrl.pathname.substring(rhsUrl.pathname.lastIndexOf('/'));
+
+    const lhsSearch = lhsUrl.search;
+    const rhsSearch = rhsUrl.search;
+
+    const actualLhsUrl = decodeURIComponent(lhsIframeUrl || `${lhsFilename}${lhsSearch}`);
+    const actualRhsUrl = decodeURIComponent(rhsIframeUrl || `${rhsFilename}${rhsSearch}`);
+
+    return actualLhsUrl === actualRhsUrl;
+}
+
+const currentUrl = {};
 
 chrome.webRequest.onBeforeRequest.addListener(
     details => {
-        if (details.method === "GET" && details.type === "sub_frame") {
+        if (details.method === 'GET' && details.type === 'sub_frame') {
             ifWakzoo(details.tabId, () => {
-                currentLocation[details.tabId] = details.url;
+                currentUrl[details.tabId] = details.url;
             });
         }
     },
-    { urls: ["*://cafe.naver.com/*"] }
+    { urls: ['*://cafe.naver.com/*'] }
 );
 
 chrome.webNavigation.onCommitted.addListener(
     details => {
-        if (details.transitionType === "reload") {
+        if (details.transitionType === 'reload') {
             ifWakzoo(details.tabId, () => {
-                chrome.tabs.update(details.tabId, {
-                    url: currentLocation[details.tabId]
+                chrome.tabs.get(details.tabId, tab => {
+                    if (!isSameUrl(currentUrl[details.tabId], tab.url)) {
+                        chrome.tabs.update(details.tabId, { url: currentUrl[details.tabId] });
+                    }
                 });
             });
         }
     },
-    { url: [{ hostEquals: "cafe.naver.com" }] }
+    { url: [{ hostEquals: 'cafe.naver.com' }] }
 );

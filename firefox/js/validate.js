@@ -1,5 +1,5 @@
 import { getArticleList, getCafeMemberInfo, getCommentListRecent } from './cafe-apis.js';
-import { installVueDelegator, getPropertyOfVue, getVue, callMethodOfVue } from './vue-delegator.js';
+import { getVue, getPropertyOfVue, callMethodOfVue } from './vue-delegator.js';
 
 const limits = {
     1: {
@@ -28,7 +28,7 @@ export async function validateArticle() {
     const menuId = await getPropertyOfVue(articleWriteVue, 'article', 'menuId');
     const headId = await getPropertyOfVue(articleWriteVue, 'article', 'headId');
 
-    const useHead = !!document.querySelector('.column_category .select_option li');
+    const useHead = document.querySelector('.column_category .select_option li');
 
     if (useHead && !headId) {
         return alert('말머리를 선택하세요.');
@@ -83,8 +83,6 @@ export async function validateComment() {
 }
 
 export function addArticleValidation() {
-    installVueDelegator();
-
     const observer = new MutationObserver(async () => {
         const articleWrite = document.querySelector('.ArticleWrite');
         const registerButton = document.querySelector('a.BaseButton');
@@ -111,8 +109,6 @@ export function addArticleValidation() {
 }
 
 export function addCommentValidation() {
-    installVueDelegator();
-
     const observer = new MutationObserver(async () => {
         const commentWriter = document.querySelector('.CommentWriter');
         const registerButton = document.querySelector('.btn_register');
