@@ -1,6 +1,9 @@
 function ifWakzoo(tabId, callback) {
     chrome.tabs.get(tabId, tab => {
-        const signatures = ['steamindiegame', '27842958'];
+        const signatures = [
+            'steamindiegame',
+            '27842958',
+        ];
 
         if (signatures.some(signature => tab.url.includes(signature))) {
             callback();

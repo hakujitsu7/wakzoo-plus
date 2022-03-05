@@ -1,6 +1,9 @@
 function ifWakzoo(tabId, callback) {
-    chrome.tabs.get(tabId, tab => {
-        const signatures = ['steamindiegame', '27842958'];
+    browser.tabs.get(tabId, tab => {
+        const signatures = [
+            'steamindiegame',
+            '27842958',
+        ];
 
         if (signatures.some(signature => tab.url.includes(signature))) {
             callback();
@@ -29,7 +32,7 @@ function isSameUrl(lhs, rhs) {
 
 const currentUrl = {};
 
-chrome.webRequest.onBeforeRequest.addListener(
+browser.webRequest.onBeforeRequest.addListener(
     details => {
         if (details.method === 'GET' && details.type === 'sub_frame') {
             ifWakzoo(details.tabId, () => {
@@ -40,14 +43,18 @@ chrome.webRequest.onBeforeRequest.addListener(
     { urls: ['*://cafe.naver.com/*'] }
 );
 
-chrome.webNavigation.onCommitted.addListener(
+browser.webNavigation.onCommitted.addListener(
     details => {
         if (details.transitionType === 'reload') {
             ifWakzoo(details.tabId, () => {
-                chrome.tabs.get(details.tabId, tab => {
-                    if (!isSameUrl(currentUrl[details.tabId], tab.url)) {
-                        chrome.tabs.update(details.tabId, { url: currentUrl[details.tabId] });
-                    }
+                browser.webNavigation.onCompleted.addListener(function onCompleted() {
+                    browser.webNavigation.onCompleted.removeListener(onCompleted);
+
+                    browser.tabs.get(details.tabId, tab => {
+                        if (!isSameUrl(currentUrl[details.tabId], tab.url)) {
+                            browser.tabs.update(details.tabId, { url: currentUrl[details.tabId] });
+                        }
+                    });
                 });
             });
         }

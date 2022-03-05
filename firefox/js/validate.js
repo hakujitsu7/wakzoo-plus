@@ -23,7 +23,7 @@ const limits = {
 };
 
 export async function validateArticle() {
-    const articleWriteVue = await getVue(document.querySelector('.ArticleWrite'));
+    const articleWriteVue = await getVue('.ArticleWrite');
 
     const menuId = await getPropertyOfVue(articleWriteVue, 'article', 'menuId');
     const headId = await getPropertyOfVue(articleWriteVue, 'article', 'headId');
@@ -56,7 +56,7 @@ export async function validateArticle() {
 }
 
 export async function validateComment() {
-    const articleVue = await getVue(document.querySelector('.Article'));
+    const articleVue = await getVue('.Article');
 
     const articleId = await getPropertyOfVue(articleVue, 'articleId');
     const menuId = await getPropertyOfVue(articleVue, 'menuId');
@@ -66,7 +66,7 @@ export async function validateComment() {
     if (commentLimit) {
         const commentList = await getCommentListRecent(articleId, 1);
 
-        const commentWriterVue = await getVue(document.querySelector('.CommentWriter'));
+        const commentWriterVue = await getVue('.CommentWriter');
         const memberId = await getPropertyOfVue(commentWriterVue, 'userId');
 
         const commentCount = commentList.filter(comment => comment.writer.id === memberId).length;
@@ -90,8 +90,8 @@ export function addArticleValidation() {
         if (articleWrite && registerButton) {
             observer.disconnect();
 
-            const articleWriteVue = await getVue(articleWrite);
-            const registerButtonVue = await getVue(registerButton);
+            const articleWriteVue = await getVue('.ArticleWrite');
+            const registerButtonVue = await getVue('a.BaseButton');
 
             await callMethodOfVue(registerButtonVue, '$off');
 
@@ -116,7 +116,7 @@ export function addCommentValidation() {
         if (commentWriter && registerButton) {
             observer.disconnect();
 
-            const commentWriterVue = await getVue(commentWriter);
+            const commentWriterVue = await getVue('.CommentWriter');
 
             registerButton.parentElement.addEventListener('click', async () => {
                 if (await callMethodOfVue(commentWriterVue, 'canSubmit')) {

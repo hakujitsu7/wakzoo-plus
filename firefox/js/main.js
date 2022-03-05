@@ -5,7 +5,10 @@ import { addArticleValidation, addCommentValidation } from './validate.js';
 import { installVueDelegator } from './vue-delegator.js';
 
 function isWakzoo() {
-    const signatures = ['steamindiegame', '27842958'];
+    const signatures = [
+        'steamindiegame',
+        '27842958',
+    ];
 
     return signatures.some(signature => location.href.includes(signature));
 }
