@@ -35,6 +35,22 @@ function isSameUrl(lhs, rhs) {
     }
 }
 
+function enableRightClick() {
+    const eventTypeList = [
+        'contextmenu',
+        'mouseup',
+        'mousedown',
+        'dragstart',
+        'selectstart',
+    ];
+
+    for (const eventType of eventTypeList) {
+        document.addEventListener(eventType, event => {
+            event.stopImmediatePropagation();
+        }, true);
+    }
+}
+
 const currentUrl = {};
 
 chrome.webRequest.onBeforeRequest.addListener(
@@ -42,24 +58,6 @@ chrome.webRequest.onBeforeRequest.addListener(
         if (details.method === 'GET' && details.type === 'sub_frame') {
             ifWakzoo(details.tabId, () => {
                 currentUrl[details.tabId] = details.url;
-            });
-        }
-        else if (details.url.includes('/storyphoto/viewer.html')) {
-            chrome.tabs.executeScript(details.tabId, {
-                code:
-                    `const eventTypeList = [
-                        'contextmenu',
-                        'mouseup',
-                        'mousedown',
-                        'dragstart',
-                        'selectstart',
-                    ];
-
-                    for (const eventType of eventTypeList) {
-                        document.addEventListener(eventType, event => {
-                            event.stopImmediatePropagation();
-                        }, true);
-                    }`
             });
         }
     },
@@ -84,3 +82,12 @@ chrome.webNavigation.onCommitted.addListener(
     },
     { url: [{ hostEquals: 'cafe.naver.com' }] }
 );
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (tab.url.includes('/storyphoto/viewer.html') && changeInfo.status === 'complete') {
+        chrome.scripting.executeScript({
+            target: { tabId: tabId },
+            func: enableRightClick,
+        });
+    }
+});

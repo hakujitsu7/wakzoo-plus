@@ -30,6 +30,7 @@
         "*://apis.naver.com/*"
     ],
     "permissions": [
+        "scripting",
         "storage",
         "tabs",
         "webNavigation",
