@@ -1,17 +1,12 @@
 function isWakzoo(tabId) {
     return new Promise(resolve => {
-        browser.tabs.get(tabId, tab => {
+        chrome.tabs.get(tabId, tab => {
             const signatures = [
                 'steamindiegame',
                 '27842958',
             ];
 
-            if (signatures.some(signature => tab.url.includes(signature))) {
-                resolve(true);
-            }
-            else {
-                resolve(false);
-            }
+            resolve(signatures.some(signature => tab.url.includes(signature)));
         });
     });
 }
@@ -42,16 +37,9 @@ function isSameUrl(lhs, rhs) {
 
 const currentUrl = {};
 
-chrome.webRequest.onBeforeRequest.addListener(
-    async (details) => {
-        if (await isWakzoo(details.tabId)) {
-            if (details.method === 'GET' && details.type === 'sub_frame') {
-                currentUrl[details.tabId] = details.url;
-            }
-        }
-    },
-    { urls: ['*://cafe.naver.com/*'] }
-);
+chrome.runtime.onMessage.addListener((message, sender) => {
+    currentUrl[sender.tab.id] = message;
+});
 
 chrome.webNavigation.onCommitted.addListener(
     async (details) => {
@@ -73,24 +61,22 @@ chrome.webNavigation.onCommitted.addListener(
 );
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (await isWakzoo(details.tabId)) {
-        if (tab.url.includes('/storyphoto/viewer.html') && changeInfo.status === 'complete') {
-            chrome.scripting.executeScript({
-                target: { tabId: tabId },
-                func: () => {
-                    const eventTypeList = [
-                        'contextmenu',
-                        'mouseup',
-                        'mousedown',
-                        'dragstart',
-                        'selectstart',
-                    ];
+    if (tab.url.includes('/storyphoto/viewer.html') && changeInfo.status === 'complete') {
+        chrome.scripting.executeScript({
+            target: { tabId: tabId },
+            func: () => {
+                const eventTypeList = [
+                    'contextmenu',
+                    'mouseup',
+                    'mousedown',
+                    'dragstart',
+                    'selectstart',
+                ];
 
-                    for (const eventType of eventTypeList) {
-                        document.addEventListener(eventType, event => event.stopImmediatePropagation(), true);
-                    }
-                },
-            });
-        }
+                for (const eventType of eventTypeList) {
+                    document.addEventListener(eventType, event => event.stopImmediatePropagation(), true);
+                }
+            },
+        });
     }
 });

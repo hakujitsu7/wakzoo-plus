@@ -38,8 +38,7 @@
         "*://apis.naver.com/*",
         "storage",
         "tabs",
-        "webNavigation",
-        "webRequest"
+        "webNavigation"
     ],
     "web_accessible_resources": [
         "js/*"

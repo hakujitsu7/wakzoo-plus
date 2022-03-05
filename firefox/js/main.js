@@ -19,6 +19,15 @@ async function isCafeMember() {
     return cafeMemberInfo.cafeMember;
 }
 
+function tryDecodeURIComponent(url) {
+    try {
+        return decodeURIComponent(url);
+    }
+    catch {
+        return url;
+    }
+}
+
 function getUrlSearchParams() {
     const urlSearchParams = new URLSearchParams(location.search);
 
@@ -29,7 +38,7 @@ function getUrlSearchParams() {
 
     while (!entryObj.done) {
         const [key, value] = entryObj.value;
-        urlSearchParamsObject[key.toLowerCase()] = decodeURIComponent(value);
+        urlSearchParamsObject[key.toLowerCase()] = tryDecodeURIComponent(value);
 
         entryObj = entries.next();
     }
@@ -39,7 +48,7 @@ function getUrlSearchParams() {
 
 export async function main() {
     if (isWakzoo() && await isCafeMember()) {
-        const url = decodeURIComponent(location.href);
+        const url = tryDecodeURIComponent(location.href);
 
         if (window.self === window.top) {
             if (url.includes('/articles/write')) {
@@ -49,6 +58,8 @@ export async function main() {
             }
         }
         else {
+            browser.runtime.sendMessage(location.href);
+
             if (url.includes('/MyCafeIntro.nhn')) {
                 blockArticles(null);
             }
