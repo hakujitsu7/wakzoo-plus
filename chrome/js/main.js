@@ -24,14 +24,8 @@ function getUrlSearchParams() {
 
     const urlSearchParamsObject = {}
 
-    const entries = urlSearchParams.entries();
-    let entryObj = entries.next();
-
-    while (!entryObj.done) {
-        const [key, value] = entryObj.value;
+    for (const [key, value] of urlSearchParams.entries()) {
         urlSearchParamsObject[key.toLowerCase()] = decodeURIComponent(value);
-
-        entryObj = entries.next();
     }
 
     return urlSearchParamsObject;
