@@ -1,13 +1,18 @@
-function ifWakzoo(tabId, callback) {
-    chrome.tabs.get(tabId, tab => {
-        const signatures = [
-            'steamindiegame',
-            '27842958',
-        ];
+function isWakzoo(tabId) {
+    return new Promise(resolve => {
+        browser.tabs.get(tabId, tab => {
+            const signatures = [
+                'steamindiegame',
+                '27842958',
+            ];
 
-        if (signatures.some(signature => tab.url.includes(signature))) {
-            callback();
-        }
+            if (signatures.some(signature => tab.url.includes(signature))) {
+                resolve(true);
+            }
+            else {
+                resolve(false);
+            }
+        });
     });
 }
 
@@ -38,20 +43,20 @@ function isSameUrl(lhs, rhs) {
 const currentUrl = {};
 
 chrome.webRequest.onBeforeRequest.addListener(
-    details => {
-        if (details.method === 'GET' && details.type === 'sub_frame') {
-            ifWakzoo(details.tabId, () => {
+    async (details) => {
+        if (await isWakzoo(details.tabId)) {
+            if (details.method === 'GET' && details.type === 'sub_frame') {
                 currentUrl[details.tabId] = details.url;
-            });
+            }
         }
     },
     { urls: ['*://cafe.naver.com/*'] }
 );
 
 chrome.webNavigation.onCommitted.addListener(
-    details => {
-        if (details.transitionType === 'reload') {
-            ifWakzoo(details.tabId, () => {
+    async (details) => {
+        if (await isWakzoo(details.tabId)) {
+            if (details.transitionType === 'reload') {
                 chrome.webNavigation.onCompleted.addListener(function onCompleted() {
                     chrome.webNavigation.onCompleted.removeListener(onCompleted);
 
@@ -61,29 +66,31 @@ chrome.webNavigation.onCommitted.addListener(
                         }
                     });
                 });
-            });
+            }
         }
     },
     { url: [{ hostEquals: 'cafe.naver.com' }] }
 );
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (tab.url.includes('/storyphoto/viewer.html') && changeInfo.status === 'complete') {
-        chrome.scripting.executeScript({
-            target: { tabId: tabId },
-            func: () => {
-                const eventTypeList = [
-                    'contextmenu',
-                    'mouseup',
-                    'mousedown',
-                    'dragstart',
-                    'selectstart',
-                ];
+    if (await isWakzoo(details.tabId)) {
+        if (tab.url.includes('/storyphoto/viewer.html') && changeInfo.status === 'complete') {
+            chrome.scripting.executeScript({
+                target: { tabId: tabId },
+                func: () => {
+                    const eventTypeList = [
+                        'contextmenu',
+                        'mouseup',
+                        'mousedown',
+                        'dragstart',
+                        'selectstart',
+                    ];
 
-                for (const eventType of eventTypeList) {
-                    document.addEventListener(eventType, event => event.stopImmediatePropagation(), true);
-                }
-            },
-        });
+                    for (const eventType of eventTypeList) {
+                        document.addEventListener(eventType, event => event.stopImmediatePropagation(), true);
+                    }
+                },
+            });
+        }
     }
 });
