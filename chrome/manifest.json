@@ -13,15 +13,36 @@
     },
     "content_scripts": [
         {
-            "matches": ["*://cafe.naver.com/*"],
+            "matches": [
+                "*://cafe.naver.com/*"
+            ],
             "all_frames": true,
-            "js": ["content.js"]
+            "css": [
+                "css/thumbnail.css"
+            ],
+            "js": [
+                "content.js"
+            ]
         }
     ],
     "host_permissions": [
-        "*://cafe.naver.com/*"
+        "*://cafe.naver.com/*",
+        "*://apis.naver.com/*"
     ],
     "permissions": [
-        "storage"
+        "storage",
+        "tabs",
+        "webNavigation",
+        "webRequest"
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "js/*"
+            ],
+            "matches": [
+                "*://cafe.naver.com/*"
+            ]
+        }
     ]
 }
