@@ -44,6 +44,24 @@ chrome.webRequest.onBeforeRequest.addListener(
                 currentUrl[details.tabId] = details.url;
             });
         }
+        else if (details.url.includes('/storyphoto/viewer.html')) {
+            chrome.tabs.executeScript(details.tabId, {
+                code:
+                    `const eventTypeList = [
+                        'contextmenu',
+                        'mouseup',
+                        'mousedown',
+                        'dragstart',
+                        'selectstart',
+                    ];
+
+                    for (const eventType of eventTypeList) {
+                        document.addEventListener(eventType, event => {
+                            event.stopImmediatePropagation();
+                        }, true);
+                    }`
+            });
+        }
     },
     { urls: ['*://cafe.naver.com/*'] }
 );
