@@ -12,22 +12,27 @@ function ifWakzoo(tabId, callback) {
 }
 
 function isSameUrl(lhs, rhs) {
-    const lhsUrl = new URL(lhs);
-    const rhsUrl = new URL(rhs);
+    try {
+        const lhsUrl = new URL(lhs);
+        const rhsUrl = new URL(rhs);
 
-    const lhsIframeUrl = lhsUrl.searchParams.get('iframe_url') || lhsUrl.searchParams.get('iframe_url_utf8');
-    const rhsIframeUrl = rhsUrl.searchParams.get('iframe_url') || rhsUrl.searchParams.get('iframe_url_utf8');
+        const lhsIframeUrl = lhsUrl.searchParams.get('iframe_url') || lhsUrl.searchParams.get('iframe_url_utf8');
+        const rhsIframeUrl = rhsUrl.searchParams.get('iframe_url') || rhsUrl.searchParams.get('iframe_url_utf8');
 
-    const lhsFilename = lhsUrl.pathname.substring(lhsUrl.pathname.lastIndexOf('/'));
-    const rhsFilename = rhsUrl.pathname.substring(rhsUrl.pathname.lastIndexOf('/'));
+        const lhsFilename = lhsUrl.pathname.substring(lhsUrl.pathname.lastIndexOf('/'));
+        const rhsFilename = rhsUrl.pathname.substring(rhsUrl.pathname.lastIndexOf('/'));
 
-    const lhsSearch = lhsUrl.search;
-    const rhsSearch = rhsUrl.search;
+        const lhsSearch = lhsUrl.search;
+        const rhsSearch = rhsUrl.search;
 
-    const actualLhsUrl = decodeURIComponent(lhsIframeUrl || `${lhsFilename}${lhsSearch}`);
-    const actualRhsUrl = decodeURIComponent(rhsIframeUrl || `${rhsFilename}${rhsSearch}`);
+        const actualLhsUrl = decodeURIComponent(lhsIframeUrl || `${lhsFilename}${lhsSearch}`);
+        const actualRhsUrl = decodeURIComponent(rhsIframeUrl || `${rhsFilename}${rhsSearch}`);
 
-    return actualLhsUrl === actualRhsUrl;
+        return actualLhsUrl === actualRhsUrl;
+    }
+    catch {
+        return false;
+    }
 }
 
 const currentUrl = {};
