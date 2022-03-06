@@ -134,6 +134,7 @@ export function addCommentValidation() {
                 event.stopPropagation();
             }, true);
 
+            registerButton.style = 'cursor: pointer;';
             registerButton.removeAttribute('href');
         }
     });
