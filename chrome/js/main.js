@@ -41,11 +41,13 @@ function getUrlSearchParams() {
 }
 
 export async function main() {
-    if (isWakzoo() && await isCafeMember()) {
+    const cafeMember = await isCafeMember();
+
+    if (isWakzoo()) {
         const url = tryDecodeURIComponent(location.href);
 
         if (window.self === window.top) {
-            if (url.includes('/articles/write')) {
+            if (url.includes('/articles/write') && cafeMember) {
                 installVueDelegator();
 
                 addArticleValidation();
@@ -55,13 +57,17 @@ export async function main() {
             chrome.runtime.sendMessage(location.href);
 
             if (url.includes('/MyCafeIntro.nhn')) {
-                blockArticles(null);
+                if (cafeMember) {
+                    blockArticles(null);
+                }
             }
             else if (url.includes('/ArticleList.nhn')) {
                 const urlSearchParams = getUrlSearchParams();
                 const boardType = urlSearchParams['search.boardtype'] || 'L';
 
-                blockArticles(boardType);
+                if (cafeMember) {
+                    blockArticles(boardType);
+                }
 
                 if (boardType === 'L') {
                     const menuId = urlSearchParams['search.menuid'] || '';
@@ -71,7 +77,7 @@ export async function main() {
                     makeThumbnails(menuId, page, perPage);
                 }
             }
-            else if (url.includes('/ArticleRead.nhn')) {
+            else if (url.includes('/ArticleRead.nhn') && cafeMember) {
                 installVueDelegator();
 
                 addCommentValidation();
