@@ -36,7 +36,7 @@ function isSameUrl(lhs, rhs) {
 }
 
 const currentUrl = {};
-let isReload = true;
+let isUserReload = true;
 
 chrome.runtime.onMessage.addListener((message, sender) => {
     currentUrl[sender.tab.id] = message;
@@ -45,21 +45,23 @@ chrome.runtime.onMessage.addListener((message, sender) => {
 chrome.webNavigation.onCommitted.addListener(
     async (details) => {
         if (await isWakzoo(details.tabId)) {
-            if (details.transitionType === 'auto_subframe') {
-                if (isReload) {
+            if (['reload', 'auto_subframe'].includes(details.transitionType)) {
+                if (isUserReload) {
+                    const originalUrl = currentUrl[details.tabId];
+
                     chrome.webNavigation.onCompleted.addListener(function onCompleted() {
                         chrome.webNavigation.onCompleted.removeListener(onCompleted);
 
                         chrome.tabs.get(details.tabId, tab => {
-                            if (!isSameUrl(currentUrl[details.tabId], tab.url)) {
-                                isReload = false;
-                                chrome.tabs.update(details.tabId, { url: currentUrl[details.tabId] });
+                            if (!isSameUrl(originalUrl, tab.url)) {
+                                isUserReload = false;
+                                chrome.tabs.update(details.tabId, { url: originalUrl });
                             }
                         });
                     });
                 }
                 else {
-                    isReload = true;
+                    isUserReload = true;
                 }
             }
         }
