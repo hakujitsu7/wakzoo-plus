@@ -36,26 +36,31 @@ function isSameUrl(lhs, rhs) {
 }
 
 const currentUrl = {};
+let isReload = true;
 
 chrome.runtime.onMessage.addListener((message, sender) => {
-    if (!isSameUrl(message, sender.tab.url)) {
-        currentUrl[sender.tab.id] = message;
-    }
+    currentUrl[sender.tab.id] = message;
 });
 
 chrome.webNavigation.onCommitted.addListener(
     async (details) => {
         if (await isWakzoo(details.tabId)) {
-            if (details.transitionType === 'reload') {
-                chrome.webNavigation.onCompleted.addListener(function onCompleted() {
-                    chrome.webNavigation.onCompleted.removeListener(onCompleted);
+            if (details.transitionType === 'auto_subframe') {
+                if (isReload) {
+                    chrome.webNavigation.onCompleted.addListener(function onCompleted() {
+                        chrome.webNavigation.onCompleted.removeListener(onCompleted);
 
-                    chrome.tabs.get(details.tabId, tab => {
-                        if (!isSameUrl(currentUrl[details.tabId], tab.url)) {
-                            chrome.tabs.update(details.tabId, { url: currentUrl[details.tabId] });
-                        }
+                        chrome.tabs.get(details.tabId, tab => {
+                            if (!isSameUrl(currentUrl[details.tabId], tab.url)) {
+                                isReload = false;
+                                chrome.tabs.update(details.tabId, { url: currentUrl[details.tabId] });
+                            }
+                        });
                     });
-                });
+                }
+                else {
+                    isReload = true;
+                }
             }
         }
     },
