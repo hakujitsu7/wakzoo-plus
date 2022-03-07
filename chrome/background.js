@@ -38,7 +38,9 @@ function isSameUrl(lhs, rhs) {
 const currentUrl = {};
 
 chrome.runtime.onMessage.addListener((message, sender) => {
-    currentUrl[sender.tab.id] = message;
+    if (!isSameUrl(message, sender.tab.url)) {
+        currentUrl[sender.tab.id] = message;
+    }
 });
 
 chrome.webNavigation.onCommitted.addListener(
