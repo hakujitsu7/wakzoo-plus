@@ -42,11 +42,27 @@ chrome.runtime.onMessage.addListener((message, sender) => {
     currentUrl[sender.tab.id] = message;
 });
 
+// 뒤로가기를 새로고침 이벤트로 오인하는 버그가 발견되어 임시적으로 기능을 비활성화하였습니다.
+// 나중에 문제가 해결된 후 다시 기능 제공할 예정입니다.
+//
+// 그럼에도 불구하고 기능 사용을 원하신다면, 아래의 절차를 따라주시기 바랍니다.
+//
+// 1. 확장 프로그램 관리 페이지에 들어갑니다.
+// 2. 화면 우측 상단에 위치한 개발자 모드를 활성화합니다.
+// 3. 왁물원 플러스의 서비스 워커를 클릭합니다.
+// 4. 서비스 워커의 콘솔에 다음과 같이 입력합니다.
+//
+// chrome.storage.local.set({ usePreviewFeatures: true });
+//
+// 만약 다시 기능을 비활성화하려면, 서비스 워커 콘솔에 다음과 같이 입력합니다.
+//
+// chrome.storage.local.set({ usePreviewFeatures: false });
+
 chrome.webNavigation.onCommitted.addListener(
-    async (details) => {
-        if (await isWakzoo(details.tabId)) {
-            if (['reload', 'auto_subframe'].includes(details.transitionType)) {
-                if (isUserReload) {
+    details => {
+        chrome.storage.local.get({ usePreviewFeatures: false }, async (result) => {
+            if (await isWakzoo(details.tabId) && result.usePreviewFeatures) {
+                if (['reload', 'auto_subframe'].includes(details.transitionType)) {
                     const originalUrl = currentUrl[details.tabId];
 
                     chrome.webNavigation.onCompleted.addListener(function onCompleted() {
@@ -54,17 +70,13 @@ chrome.webNavigation.onCommitted.addListener(
 
                         chrome.tabs.get(details.tabId, tab => {
                             if (!isSameUrl(originalUrl, tab.url)) {
-                                isUserReload = false;
                                 chrome.tabs.update(details.tabId, { url: originalUrl });
                             }
                         });
                     });
                 }
-                else {
-                    isUserReload = true;
-                }
             }
-        }
+        });
     },
     { url: [{ hostEquals: 'cafe.naver.com' }] }
 );
