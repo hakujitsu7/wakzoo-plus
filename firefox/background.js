@@ -45,12 +45,14 @@ browser.webNavigation.onCommitted.addListener(
     async (details) => {
         if (await isWakzoo(details.tabId)) {
             if (details.transitionType === 'reload') {
+                const originalUrl = currentUrl[details.tabId];
+
                 browser.webNavigation.onCompleted.addListener(function onCompleted() {
                     browser.webNavigation.onCompleted.removeListener(onCompleted);
 
                     browser.tabs.get(details.tabId, tab => {
-                        if (!isSameUrl(currentUrl[details.tabId], tab.url)) {
-                            browser.tabs.update(details.tabId, { url: currentUrl[details.tabId] });
+                        if (!isSameUrl(originalUrl, tab.url)) {
+                            browser.tabs.update(details.tabId, { url: originalUrl });
                         }
                     });
                 });
