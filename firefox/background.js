@@ -35,17 +35,19 @@ function isSameUrl(lhs, rhs) {
     }
 }
 
-const currentUrl = {};
+const subframeUrl = {};
 
-browser.runtime.onMessage.addListener((message, sender) => {
-    currentUrl[sender.tab.id] = message;
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.type === 'set_subframe_url') {
+        subframeUrl[sender.tab.id] = message.subframeUrl;
+    }
 });
 
 browser.webNavigation.onCommitted.addListener(
     async (details) => {
         if (await isWakzoo(details.tabId)) {
             if (details.transitionType === 'reload') {
-                const originalUrl = currentUrl[details.tabId];
+                const originalUrl = subframeUrl[details.tabId];
 
                 browser.webNavigation.onCompleted.addListener(function onCompleted() {
                     browser.webNavigation.onCompleted.removeListener(onCompleted);

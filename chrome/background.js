@@ -35,11 +35,12 @@ function isSameUrl(lhs, rhs) {
     }
 }
 
-const currentUrl = {};
-let isUserReload = true;
+const subframeUrl = {};
 
 chrome.runtime.onMessage.addListener((message, sender) => {
-    currentUrl[sender.tab.id] = message;
+    if (message.type === 'set_subframe_url') {
+        subframeUrl[sender.tab.id] = message.subframeUrl;
+    }
 });
 
 // 뒤로가기를 새로고침 이벤트로 오인하는 버그가 발견되어 임시적으로 기능을 비활성화하였습니다.
@@ -63,7 +64,7 @@ chrome.webNavigation.onCommitted.addListener(
         chrome.storage.local.get({ usePreviewFeatures: false }, async (result) => {
             if (await isWakzoo(details.tabId) && result.usePreviewFeatures) {
                 if (['reload', 'auto_subframe'].includes(details.transitionType)) {
-                    const originalUrl = currentUrl[details.tabId];
+                    const originalUrl = subframeUrl[details.tabId];
 
                     chrome.webNavigation.onCompleted.addListener(function onCompleted() {
                         chrome.webNavigation.onCompleted.removeListener(onCompleted);

@@ -1,6 +1,6 @@
 import { blockArticles } from './block.js';
 import { getCafeMemberInfo } from './cafe-apis.js';
-import { makeThumbnails } from './thumbnail.js';
+import { makeThumbnailsInArticleList } from './thumbnail.js';
 import { addArticleValidation, addCommentValidation } from './validate.js';
 import { installVueDelegator } from './vue-delegator.js';
 
@@ -54,7 +54,10 @@ export async function main() {
             }
         }
         else {
-            chrome.runtime.sendMessage(location.href);
+            chrome.runtime.sendMessage({
+                type: 'set_subframe_url',
+                subframeUrl: location.href,
+            });
 
             if (url.includes('/MyCafeIntro.nhn')) {
                 if (cafeMember) {
@@ -74,7 +77,7 @@ export async function main() {
                     const page = urlSearchParams['search.page'] || '1';
                     const perPage = urlSearchParams['userdisplay'] || '15';
 
-                    makeThumbnails(menuId, page, perPage);
+                    makeThumbnailsInArticleList(menuId, page, perPage);
                 }
             }
             else if (url.includes('/ArticleRead.nhn') && cafeMember) {
