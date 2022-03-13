@@ -1,5 +1,6 @@
 import { blockArticles } from './block.js';
 import { getCafeMemberInfo } from './cafe-apis.js';
+import { cp949ToUtf8 } from './cp949-to-utf8';
 import { makeThumbnailsInArticleList } from './thumbnail.js';
 import { addArticleValidation, addCommentValidation } from './validate.js';
 import { installVueDelegator } from './vue-delegator.js';
@@ -19,12 +20,17 @@ async function isCafeMember() {
     return cafeMemberInfo.cafeMember;
 }
 
-function tryDecodeURIComponent(url) {
+function tryDecodeURIComponent(encodedURIComponent) {
     try {
-        return decodeURIComponent(url);
+        return decodeURIComponent(encodedURIComponent);
     }
     catch {
-        return url;
+        try {
+            return decodeURIComponent(cp949ToUtf8(encodedURIComponent));
+        }
+        catch {
+            return encodedURIComponent;
+        }
     }
 }
 
