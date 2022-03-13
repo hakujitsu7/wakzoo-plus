@@ -1,4 +1,4 @@
-import cp949Table from './cp949-table';
+import cp949Table from './cp949-table.js';
 
 export function cp949ToUtf8(encodedURIComponent) {
     const characters = encodedURIComponent.match(/%\w{2}|./g);

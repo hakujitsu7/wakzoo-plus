@@ -1,6 +1,5 @@
 import { blockArticles } from './block.js';
 import { getCafeMemberInfo } from './cafe-apis.js';
-import { cp949ToUtf8 } from './cp949-to-utf8';
 import { makeThumbnailsInArticleList } from './thumbnail.js';
 import { addArticleValidation, addCommentValidation } from './validate.js';
 import { installVueDelegator } from './vue-delegator.js';
@@ -25,12 +24,7 @@ function tryDecodeURIComponent(encodedURIComponent) {
         return decodeURIComponent(encodedURIComponent);
     }
     catch {
-        try {
-            return decodeURIComponent(cp949ToUtf8(encodedURIComponent));
-        }
-        catch {
-            return encodedURIComponent;
-        }
+        return encodedURIComponent;
     }
 }
 
@@ -44,7 +38,7 @@ function getUrlSearchParams() {
 
     while (!entryObj.done) {
         const [key, value] = entryObj.value;
-        urlSearchParamsObject[key.toLowerCase()] = tryDecodeURIComponent(value);
+        urlSearchParamsObject[key.toLowerCase()] = value;
 
         entryObj = entries.next();
     }
