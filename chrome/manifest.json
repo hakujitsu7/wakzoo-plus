@@ -33,8 +33,7 @@
     "permissions": [
         "scripting",
         "storage",
-        "tabs",
-        "webNavigation"
+        "tabs"
     ],
     "web_accessible_resources": [
         {
