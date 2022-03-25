@@ -1,6 +1,7 @@
 import { blockArticles } from './block.js';
 import { getCafeMemberInfo } from './cafe-apis.js';
-import { makeThumbnailsInArticleList } from './thumbnail.js';
+import { cp949ToUtf8InUrlSearchParams } from './cp949-to-utf8.js';
+import { makeThumbnailsInArticleList, makeThumbnailsInArticleSearchList } from './thumbnail.js';
 import { addArticleValidation, addCommentValidation } from './validate.js';
 import { installVueDelegator } from './vue-delegator.js';
 
@@ -28,8 +29,8 @@ function tryDecodeURIComponent(encodedURIComponent) {
     }
 }
 
-function getUrlSearchParams() {
-    const urlSearchParams = new URLSearchParams(location.search);
+function getUrlSearchParams(search) {
+    const urlSearchParams = new URLSearchParams(search || location.search);
 
     const urlSearchParamsObject = {}
 
@@ -85,6 +86,20 @@ export async function main() {
 
                     makeThumbnailsInArticleList(menuId, page, perPage);
                 }
+            }
+            else if (url.includes('/ArticleSearchList.nhn')) {
+                const utf8Search = cp949ToUtf8InUrlSearchParams('search.query');
+                const urlSearchParams = getUrlSearchParams(utf8Search);
+
+                const menuId = urlSearchParams['search.menuid'] || '';
+                const page = urlSearchParams['search.page'] || '1';
+                const perPage = urlSearchParams['userdisplay'] || '15';
+
+                const query = urlSearchParams['search.query'] || '';
+                const searchBy = urlSearchParams['search.searchby'] || '0';
+                const sortBy = urlSearchParams['search.sortby'] || 'date';
+
+                makeThumbnailsInArticleSearchList(menuId, page, perPage, query, searchBy, sortBy);
             }
             else if (url.includes('/ArticleRead.nhn') && cafeMember) {
                 installVueDelegator();

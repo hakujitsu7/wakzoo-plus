@@ -1,4 +1,4 @@
-import { getArticleList } from './cafe-apis.js';
+import { getArticleList, getArticleSearchList } from './cafe-apis.js';
 
 export async function makeThumbnailsInArticleList(menuId, page, perPage) {
     const storage = await browser.storage.local.get({ thumbnailCache: {} });
@@ -29,6 +29,27 @@ export async function makeThumbnailsInArticleList(menuId, page, perPage) {
             }
         });
     }
+
+    for (const thumbnail of thumbnailList) {
+        const articleElement = document.querySelector(`a.article[href*="articleid=${thumbnail.articleId}"]`)?.closest('tr');
+
+        if (articleElement) {
+            articleElement.querySelector('.inner_list').innerHTML +=
+                `<span class="list-i-thumb">
+                    <img src="${thumbnail.thumbnailUrl}" width="100px" height="100px" alt="">
+                </span>`
+        }
+    }
+}
+
+export async function makeThumbnailsInArticleSearchList(menuId, page, perPage, query, searchBy, sortBy) {
+    const articleList = await getArticleSearchList(menuId, page, perPage, query, searchBy, sortBy);
+
+    const filteredArticleList = articleList.filter(article => article.thumbnailImageUrl);
+    const thumbnailList = filteredArticleList.map(article => ({
+        articleId: article.articleId,
+        thumbnailUrl: article.thumbnailImageUrl,
+    }));
 
     for (const thumbnail of thumbnailList) {
         const articleElement = document.querySelector(`a.article[href*="articleid=${thumbnail.articleId}"]`)?.closest('tr');

@@ -27,3 +27,21 @@ export function cp949ToUtf8(encodedURIComponent) {
 
     return result.join('');
 }
+
+export function cp949ToUtf8InUrlSearchParams(...cp949Components) {
+    cp949Components.forEach((component, index) => {
+        cp949Components[index] = component.toLowerCase();
+    });
+
+    return location.search.replace(
+        /([?&])([^=]+)=([^&]*)/g,
+        (match, separator, key, value) => {
+            if (cp949Components.includes(key.toLowerCase())) {
+                return `${separator}${key}=${cp949ToUtf8(value)}`;
+            }
+            else {
+                return match;
+            }
+        }
+    );
+}
