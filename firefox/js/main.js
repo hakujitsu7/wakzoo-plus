@@ -1,7 +1,7 @@
 import { blockArticles } from './block.js';
 import { getCafeMemberInfo } from './cafe-apis.js';
 import { cp949ToUtf8InUrlSearchParams } from './cp949-to-utf8.js';
-import { makeThumbnailsInArticleList, makeThumbnailsInArticleSearchList } from './thumbnail.js';
+import { makeThumbnailsInArticleList, makeThumbnailsInArticleSearchList, makeThumbnailsInBestArticleList } from './thumbnail.js';
 import { addArticleValidation, addCommentValidation } from './validate.js';
 import { installVueDelegator } from './vue-delegator.js';
 
@@ -100,6 +100,14 @@ export async function main() {
                 const sortBy = urlSearchParams['search.sortby'] || 'date';
 
                 makeThumbnailsInArticleSearchList(menuId, page, perPage, query, searchBy, sortBy);
+            }
+            else if (url.includes('/BestArticleList.nhn')) {
+                const urlSearchParams = getUrlSearchParams();
+
+                const type = urlSearchParams['period'] || 'week';
+                const period = urlSearchParams['listtype'] || 'commentcount';
+
+                makeThumbnailsInBestArticleList(type, period === 'commentcount' ? 'comment' : 'likeIt');
             }
             else if (url.includes('/ArticleRead.nhn') && cafeMember) {
                 installVueDelegator();

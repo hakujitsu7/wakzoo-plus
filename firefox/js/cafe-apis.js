@@ -33,6 +33,13 @@ export async function getArticleSearchList(menuId, page, perPage, query, searchB
     return json.message.result.articleList;
 }
 
+export async function getBestArticleList(type, period) {
+    const response = await fetchWithCredentials(`https://apis.naver.com/cafe-web/cafe2/BestArticleListV2.json?cafeId=27842958&type=${type}&period=${period}&adUnit=MW_CAFE_BOARD`);
+    const json = await response.json();
+
+    return json.message.result.articleList;
+}
+
 export async function getBlockMemberList() {
     const response = await fetchWithCredentials('https://apis.naver.com/cafe-web/cafe-cafeinfo-api/v1.0/cafes/27842958/block-members');
     const json = await response.json();
