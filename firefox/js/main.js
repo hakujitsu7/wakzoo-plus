@@ -1,7 +1,7 @@
 import { blockArticles } from './block.js';
 import { getCafeMemberInfo } from './cafe-apis.js';
-import { cp949ToUtf8InUrlSearchParams } from './cp949-to-utf8.js';
 import { makeThumbnailsInArticleList, makeThumbnailsInArticleSearchList, makeThumbnailsInBestArticleList } from './thumbnail.js';
+import { tryDecodeURIComponent, getUrlSearchParams, cp949ToUtf8InUrlSearchParams } from './url.js';
 import { addArticleValidation, addCommentValidation } from './validate.js';
 import { installVueDelegator } from './vue-delegator.js';
 
@@ -18,33 +18,6 @@ async function isCafeMember() {
     const cafeMemberInfo = await getCafeMemberInfo();
 
     return cafeMemberInfo.cafeMember;
-}
-
-function tryDecodeURIComponent(encodedURIComponent) {
-    try {
-        return decodeURIComponent(encodedURIComponent);
-    }
-    catch {
-        return encodedURIComponent;
-    }
-}
-
-function getUrlSearchParams(search) {
-    const urlSearchParams = new URLSearchParams(search || location.search);
-
-    const urlSearchParamsObject = {}
-
-    const entries = urlSearchParams.entries();
-    let entryObj = entries.next();
-
-    while (!entryObj.done) {
-        const [key, value] = entryObj.value;
-        urlSearchParamsObject[key.toLowerCase()] = value;
-
-        entryObj = entries.next();
-    }
-
-    return urlSearchParamsObject;
 }
 
 export async function main() {
