@@ -1,8 +1,10 @@
-import { blockArticles } from './block.js';
-import { getCafeMemberInfo } from './cafe-apis.js';
-import { makeThumbnailsInArticleList } from './thumbnail.js';
-import { addArticleValidation, addCommentValidation } from './validate.js';
-import { installVueDelegator } from './vue-delegator.js';
+import * as block from './block.js';
+import * as thumbnail from './thumbnail.js';
+import * as validate from './validate.js';
+
+import { getCafeMemberInfo } from './misc/cafe-apis.js';
+import { tryDecodeURIComponent, getUrlSearchParams, cp949ToUtf8InUrlSearchParams } from './misc/url.js';
+import { installVueDelegator } from './misc/vue-delegator.js';
 
 function isWakzoo() {
     const signatures = [
@@ -19,27 +21,6 @@ async function isCafeMember() {
     return cafeMemberInfo.cafeMember;
 }
 
-function tryDecodeURIComponent(url) {
-    try {
-        return decodeURIComponent(url);
-    }
-    catch {
-        return url;
-    }
-}
-
-function getUrlSearchParams() {
-    const urlSearchParams = new URLSearchParams(location.search);
-
-    const urlSearchParamsObject = {}
-
-    for (const [key, value] of urlSearchParams.entries()) {
-        urlSearchParamsObject[key.toLowerCase()] = tryDecodeURIComponent(value);
-    }
-
-    return urlSearchParamsObject;
-}
-
 export async function main() {
     const cafeMember = await isCafeMember();
 
@@ -50,18 +31,13 @@ export async function main() {
             if (url.includes('/articles/write') && cafeMember) {
                 installVueDelegator();
 
-                addArticleValidation();
+                validate.addArticleValidation();
             }
         }
         else {
-            chrome.runtime.sendMessage({
-                type: 'set_subframe_url',
-                subframeUrl: location.href,
-            });
-
             if (url.includes('/MyCafeIntro.nhn')) {
                 if (cafeMember) {
-                    blockArticles(null);
+                    block.blockArticlesInMyCafeIntro();
                 }
             }
             else if (url.includes('/ArticleList.nhn')) {
@@ -69,7 +45,7 @@ export async function main() {
                 const boardType = urlSearchParams['search.boardtype'] || 'L';
 
                 if (cafeMember) {
-                    blockArticles(boardType);
+                    block.blockArticlesInArticleList(boardType);
                 }
 
                 if (boardType === 'L') {
@@ -77,13 +53,44 @@ export async function main() {
                     const page = urlSearchParams['search.page'] || '1';
                     const perPage = urlSearchParams['userdisplay'] || '15';
 
-                    makeThumbnailsInArticleList(menuId, page, perPage);
+                    thumbnail.makeThumbnailsInArticleList(menuId, page, perPage);
                 }
+            }
+            else if (url.includes('/ArticleSearchList.nhn')) {
+                console.log(url);
+                if (cafeMember) {
+                    block.blockArticlesInArticleSearchList();
+                }
+
+                const utf8Search = cp949ToUtf8InUrlSearchParams('search.query');
+                const urlSearchParams = getUrlSearchParams(utf8Search);
+                console.log(urlSearchParams);
+                const menuId = urlSearchParams['search.menuid'] || '';
+                const page = urlSearchParams['search.page'] || '1';
+                const perPage = urlSearchParams['userdisplay'] || '15';
+
+                const query = urlSearchParams['search.query'] || '';
+                const searchBy = urlSearchParams['search.searchby'] || '0';
+                const sortBy = urlSearchParams['search.sortby'] || 'date';
+
+                thumbnail.makeThumbnailsInArticleSearchList(menuId, page, perPage, query, searchBy, sortBy);
+            }
+            else if (url.includes('/BestArticleList.nhn')) {
+                if (cafeMember) {
+                    block.blockArticlesInBestArticleList();
+                }
+
+                const urlSearchParams = getUrlSearchParams();
+
+                const type = urlSearchParams['period'] || 'week';
+                const period = urlSearchParams['listtype'] || 'commentcount';
+
+                thumbnail.makeThumbnailsInBestArticleList(type, period === 'commentcount' ? 'comment' : 'likeIt');
             }
             else if (url.includes('/ArticleRead.nhn') && cafeMember) {
                 installVueDelegator();
 
-                addCommentValidation();
+                validate.addCommentValidation();
             }
         }
     }

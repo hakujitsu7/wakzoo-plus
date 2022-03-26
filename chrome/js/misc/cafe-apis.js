@@ -26,6 +26,20 @@ export async function getArticleListAndBlockMemberList(menuId, page, perPage) {
     };
 }
 
+export async function getArticleSearchList(menuId, page, perPage, query, searchBy, sortBy) {
+    const response = await fetchWithCredentials(`https://apis.naver.com/cafe-web/cafe-mobile/CafeMobileWebArticleSearchListV3?cafeId=27842958&menuId=${menuId}&query=${query}&searchBy=${searchBy}&sortBy=${sortBy}&page=${page}&perPage=${perPage}&adUnit=MW_CAFE_BOARD`);
+    const json = await response.json();
+
+    return json.message.result.articleList;
+}
+
+export async function getBestArticleList(type, period) {
+    const response = await fetchWithCredentials(`https://apis.naver.com/cafe-web/cafe2/BestArticleListV2.json?cafeId=27842958&type=${type}&period=${period}&adUnit=MW_CAFE_BOARD`);
+    const json = await response.json();
+
+    return json.message.result.articleList;
+}
+
 export async function getBlockMemberList() {
     const response = await fetchWithCredentials('https://apis.naver.com/cafe-web/cafe-cafeinfo-api/v1.0/cafes/27842958/block-members');
     const json = await response.json();
@@ -136,7 +150,7 @@ export async function getMemberIdByMemberKey(memberKey) {
 }
 
 export async function getMemberIdByNickname(nickname) {
-    const response = await fetchWithCredentials(`https://apis.naver.com/cafe-web/cafe-talk/v3/categories/27842958/members?query=${encodeURIComponent(nickname)}`);
+    const response = await fetchWithCredentials(`https://apis.naver.com/cafe-web/cafe-talk/v3/categories/27842958/members?query=${nickname}`);
     const json = await response.json();
 
     const memberList = json.message.result.memberList.map(member => ({

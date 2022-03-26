@@ -3,7 +3,7 @@ export function installVueDelegator() {
         const script = document.createElement('script');
 
         script.id = 'WakzooPlus-VueDelegator';
-        script.src = chrome.runtime.getURL('js/vue-delegator-page-context.js');;
+        script.src = chrome.runtime.getURL('js/misc/vue-delegator-page-context.js');;
 
         document.body.appendChild(script);
     }
