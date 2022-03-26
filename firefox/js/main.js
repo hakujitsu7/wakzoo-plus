@@ -1,6 +1,6 @@
-import { blockArticlesInMyCafeIntro, blockArticlesInArticleList, blockArticlesInArticleSearchList, blockArticlesInBestArticleList } from './block.js';
-import { makeThumbnailsInArticleList, makeThumbnailsInArticleSearchList, makeThumbnailsInBestArticleList } from './thumbnail.js';
-import { addArticleValidation, addCommentValidation } from './validate.js';
+import * as block from './block.js';
+import * as thumbnail from './thumbnail.js';
+import * as validate from './validate.js';
 
 import { getCafeMemberInfo } from './misc/cafe-apis.js';
 import { tryDecodeURIComponent, getUrlSearchParams, cp949ToUtf8InUrlSearchParams } from './misc/url.js';
@@ -31,7 +31,7 @@ export async function main() {
             if (url.includes('/articles/write') && cafeMember) {
                 installVueDelegator();
 
-                addArticleValidation();
+                validate.addArticleValidation();
             }
         }
         else {
@@ -42,7 +42,7 @@ export async function main() {
 
             if (url.includes('/MyCafeIntro.nhn')) {
                 if (cafeMember) {
-                    blockArticlesInMyCafeIntro();
+                    block.blockArticlesInMyCafeIntro();
                 }
             }
             else if (url.includes('/ArticleList.nhn')) {
@@ -50,7 +50,7 @@ export async function main() {
                 const boardType = urlSearchParams['search.boardtype'] || 'L';
 
                 if (cafeMember) {
-                    blockArticlesInArticleList(boardType);
+                    block.blockArticlesInArticleList(boardType);
                 }
 
                 if (boardType === 'L') {
@@ -58,12 +58,12 @@ export async function main() {
                     const page = urlSearchParams['search.page'] || '1';
                     const perPage = urlSearchParams['userdisplay'] || '15';
 
-                    makeThumbnailsInArticleList(menuId, page, perPage);
+                    thumbnail.makeThumbnailsInArticleList(menuId, page, perPage);
                 }
             }
             else if (url.includes('/ArticleSearchList.nhn')) {
                 if (cafeMember) {
-                    blockArticlesInArticleSearchList();
+                    block.blockArticlesInArticleSearchList();
                 }
 
                 const utf8Search = cp949ToUtf8InUrlSearchParams('search.query');
@@ -77,11 +77,11 @@ export async function main() {
                 const searchBy = urlSearchParams['search.searchby'] || '0';
                 const sortBy = urlSearchParams['search.sortby'] || 'date';
 
-                makeThumbnailsInArticleSearchList(menuId, page, perPage, query, searchBy, sortBy);
+                thumbnail.makeThumbnailsInArticleSearchList(menuId, page, perPage, query, searchBy, sortBy);
             }
             else if (url.includes('/BestArticleList.nhn')) {
                 if (cafeMember) {
-                    blockArticlesInBestArticleList();
+                    block.blockArticlesInBestArticleList();
                 }
 
                 const urlSearchParams = getUrlSearchParams();
@@ -89,12 +89,12 @@ export async function main() {
                 const type = urlSearchParams['period'] || 'week';
                 const period = urlSearchParams['listtype'] || 'commentcount';
 
-                makeThumbnailsInBestArticleList(type, period === 'commentcount' ? 'comment' : 'likeIt');
+                thumbnail.makeThumbnailsInBestArticleList(type, period === 'commentcount' ? 'comment' : 'likeIt');
             }
             else if (url.includes('/ArticleRead.nhn') && cafeMember) {
                 installVueDelegator();
 
-                addCommentValidation();
+                validate.addCommentValidation();
             }
         }
     }
