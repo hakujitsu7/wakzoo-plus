@@ -33,7 +33,7 @@
             value = JSON.stringify(value);
         }
         catch (error) {
-            value = error.toString();
+            value = JSON.stringify(error.toString());
         }
 
         dispatchEvent(new CustomEvent('VueDelegator-GetPropertyOfVue-Response', {

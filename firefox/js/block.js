@@ -1,4 +1,4 @@
-import { getBlockMemberList, getMemberKeyByMemberId } from './cafe-apis.js';
+import { getBlockMemberList, getMemberKeyByMemberId } from './misc/cafe-apis.js';
 
 async function getBlockMemberKeyList() {
     const blockMemberList = await getBlockMemberList();

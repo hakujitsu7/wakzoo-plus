@@ -1,4 +1,4 @@
-import { getArticleList, getArticleSearchList, getBestArticleList } from './cafe-apis.js';
+import { getArticleList, getArticleSearchList, getBestArticleList } from './misc/cafe-apis.js';
 
 export async function makeThumbnailsInArticleList(menuId, page, perPage) {
     const storage = await browser.storage.local.get({ articleListThumbnailCache: {} });

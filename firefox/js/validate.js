@@ -1,5 +1,5 @@
-import { getArticleList, getCafeMemberInfo, getCommentListRecent } from './cafe-apis.js';
-import { getVue, getPropertyOfVue, callMethodOfVue } from './vue-delegator.js';
+import { getArticleList, getCafeMemberInfo, getCommentListRecent } from './misc/cafe-apis.js';
+import { getVue, getPropertyOfVue, callMethodOfVue } from './misc/vue-delegator.js';
 
 const limits = {
     1: {

@@ -1,9 +1,10 @@
 import { blockArticlesInMyCafeIntro, blockArticlesInArticleList, blockArticlesInArticleSearchList, blockArticlesInBestArticleList } from './block.js';
-import { getCafeMemberInfo } from './cafe-apis.js';
 import { makeThumbnailsInArticleList, makeThumbnailsInArticleSearchList, makeThumbnailsInBestArticleList } from './thumbnail.js';
-import { tryDecodeURIComponent, getUrlSearchParams, cp949ToUtf8InUrlSearchParams } from './url.js';
 import { addArticleValidation, addCommentValidation } from './validate.js';
-import { installVueDelegator } from './vue-delegator.js';
+
+import { getCafeMemberInfo } from './misc/cafe-apis.js';
+import { tryDecodeURIComponent, getUrlSearchParams, cp949ToUtf8InUrlSearchParams } from './misc/url.js';
+import { installVueDelegator } from './misc/vue-delegator.js';
 
 function isWakzoo() {
     const signatures = [
