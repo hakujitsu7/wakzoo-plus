@@ -1,4 +1,4 @@
-import { blockArticles } from './block.js';
+import { blockArticlesInMyCafeIntro, blockArticlesInArticleList, blockArticlesInArticleSearchList, blockArticlesInBestArticleList } from './block.js';
 import { getCafeMemberInfo } from './cafe-apis.js';
 import { makeThumbnailsInArticleList, makeThumbnailsInArticleSearchList, makeThumbnailsInBestArticleList } from './thumbnail.js';
 import { tryDecodeURIComponent, getUrlSearchParams, cp949ToUtf8InUrlSearchParams } from './url.js';
@@ -41,7 +41,7 @@ export async function main() {
 
             if (url.includes('/MyCafeIntro.nhn')) {
                 if (cafeMember) {
-                    blockArticles(null);
+                    blockArticlesInMyCafeIntro();
                 }
             }
             else if (url.includes('/ArticleList.nhn')) {
@@ -49,7 +49,7 @@ export async function main() {
                 const boardType = urlSearchParams['search.boardtype'] || 'L';
 
                 if (cafeMember) {
-                    blockArticles(boardType);
+                    blockArticlesInArticleList(boardType);
                 }
 
                 if (boardType === 'L') {
@@ -61,6 +61,10 @@ export async function main() {
                 }
             }
             else if (url.includes('/ArticleSearchList.nhn')) {
+                if (cafeMember) {
+                    blockArticlesInArticleSearchList();
+                }
+
                 const utf8Search = cp949ToUtf8InUrlSearchParams('search.query');
                 const urlSearchParams = getUrlSearchParams(utf8Search);
 
@@ -75,6 +79,10 @@ export async function main() {
                 makeThumbnailsInArticleSearchList(menuId, page, perPage, query, searchBy, sortBy);
             }
             else if (url.includes('/BestArticleList.nhn')) {
+                if (cafeMember) {
+                    blockArticlesInBestArticleList();
+                }
+
                 const urlSearchParams = getUrlSearchParams();
 
                 const type = urlSearchParams['period'] || 'week';
