@@ -37,7 +37,7 @@ export async function makeThumbnailsInArticleList(menuId, page, perPage) {
             articleElement.querySelector('.inner_list').innerHTML +=
                 `<span class="list-i-thumb">
                     <img src="${thumbnail.thumbnailUrl}" width="100px" height="100px" alt="">
-                </span>`
+                </span>`;
         }
     }
 }
@@ -79,7 +79,7 @@ export async function makeThumbnailsInArticleSearchList(menuId, page, perPage, q
             articleElement.querySelector('.inner_list').innerHTML +=
                 `<span class="list-i-thumb">
                     <img src="${thumbnail.thumbnailUrl}" width="100px" height="100px" alt="">
-                </span>`
+                </span>`;
         }
     }
 }
@@ -121,7 +121,7 @@ export async function makeThumbnailsInBestArticleList(type, period) {
             articleElement.querySelector('.board-list').innerHTML +=
                 `<span class="list-i-thumb">
                     <img src="${thumbnail.thumbnailUrl}" width="100px" height="100px" alt="">
-                </span>`
+                </span>`;
         }
     }
 }

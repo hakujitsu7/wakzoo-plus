@@ -41,12 +41,12 @@ export async function main() {
                 }
             }
             else if (url.includes('/ArticleList.nhn')) {
-                const urlSearchParams = getUrlSearchParams();
-                const boardType = urlSearchParams['search.boardtype'] || 'L';
-
                 if (cafeMember) {
                     block.blockArticlesInArticleList(boardType);
                 }
+
+                const urlSearchParams = getUrlSearchParams();
+                const boardType = urlSearchParams['search.boardtype'] || 'L';
 
                 if (boardType === 'L') {
                     const menuId = urlSearchParams['search.menuid'] || '';
@@ -57,14 +57,13 @@ export async function main() {
                 }
             }
             else if (url.includes('/ArticleSearchList.nhn')) {
-                console.log(url);
                 if (cafeMember) {
                     block.blockArticlesInArticleSearchList();
                 }
 
                 const utf8Search = cp949ToUtf8InUrlSearchParams('search.query');
                 const urlSearchParams = getUrlSearchParams(utf8Search);
-                console.log(urlSearchParams);
+
                 const menuId = urlSearchParams['search.menuid'] || '';
                 const page = urlSearchParams['search.page'] || '1';
                 const perPage = urlSearchParams['userdisplay'] || '15';

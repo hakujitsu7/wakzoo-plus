@@ -46,12 +46,12 @@ export async function main() {
                 }
             }
             else if (url.includes('/ArticleList.nhn')) {
-                const urlSearchParams = getUrlSearchParams();
-                const boardType = urlSearchParams['search.boardtype'] || 'L';
-
                 if (cafeMember) {
                     block.blockArticlesInArticleList(boardType);
                 }
+
+                const urlSearchParams = getUrlSearchParams();
+                const boardType = urlSearchParams['search.boardtype'] || 'L';
 
                 if (boardType === 'L') {
                     const menuId = urlSearchParams['search.menuid'] || '';

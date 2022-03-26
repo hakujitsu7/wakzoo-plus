@@ -9,7 +9,7 @@ export function tryDecodeURIComponent(encodedURIComponent) {
     }
 }
 
-export function getUrlSearchParams(search) {
+export function getUrlSearchParams(search = null) {
     const urlSearchParams = new URLSearchParams(search || location.search);
 
     const urlSearchParamsObject = {}
