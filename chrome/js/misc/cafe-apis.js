@@ -3,7 +3,7 @@
  * @param {string} url 요청을 보낼 URL
  * @return {Promise<any>} 응답
  */
- async function fetchWithCredentials(url) {
+async function fetchWithCredentials(url) {
     return await fetch(url, { credentials: 'include' });
 }
 
