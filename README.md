@@ -1,7 +1,7 @@
 # 왁물원 플러스
 
-<a href="https://chrome.google.com/webstore/detail/%EC%99%81%EB%AC%BC%EC%9B%90-%ED%94%8C%EB%9F%AC%EC%8A%A4/enpjdmldbplkhooccppfofeaohkloigo"><img src="https://user-images.githubusercontent.com/585534/107280622-91a8ea80-6a26-11eb-8d07-77c548b28665.png" alt="Get Wakzoo Plus for Chromium"></a>
-<a href="https://addons.mozilla.org/en-US/firefox/addon/wakzoo-plus/"><img src="https://user-images.githubusercontent.com/585534/107280546-7b9b2a00-6a26-11eb-8f9f-f95932f4bfec.png" alt="Get Wakzoo Plus for Firefox"></a>
+[![Get Wakzoo Plus for Chrome](https://user-images.githubusercontent.com/585534/107280622-91a8ea80-6a26-11eb-8d07-77c548b28665.png)](https://chrome.google.com/webstore/detail/%EC%99%81%EB%AC%BC%EC%9B%90-%ED%94%8C%EB%9F%AC%EC%8A%A4/enpjdmldbplkhooccppfofeaohkloigo)
+[![Get Wakzoo Plus for Firefox](https://user-images.githubusercontent.com/585534/107280546-7b9b2a00-6a26-11eb-8f9f-f95932f4bfec.png)](https://addons.mozilla.org/en-US/firefox/addon/wakzoo-plus/)
 
 ## :memo: 소개
 왁물원 플러스와 함께 더 편리해진 왁물원을 만나보세요.  
@@ -47,4 +47,4 @@
 * 파이어폭스에서 새로고침 시 간헐적으로 탭 충돌 버그가 발생하는 버그가 있습니다.
 
 ## :mailbox_with_mail: 문의
-이 깃헙의 ![이슈 탭](https://github.com/hakujitsu7/wakzoo-plus/issues)으로 해 주시면 감사하겠습니다.
+이 깃헙의 [이슈 탭](https://github.com/hakujitsu7/wakzoo-plus/issues)으로 해 주시면 감사하겠습니다.
