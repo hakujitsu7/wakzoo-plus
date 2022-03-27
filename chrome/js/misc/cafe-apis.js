@@ -24,7 +24,7 @@ export async function getArticle(articleId) {
  * @param {string|number} menuId 게시판 아이디 (비우면 전체 게시판)
  * @param {string|number} page 페이지
  * @param {string|number} perPage 한 페이지당 게시글 개수
- * @returns {Promise<object>} 게시글 목록
+ * @returns {Promise<object[]>} 게시글 목록
  */
 export async function getArticleList(menuId, page, perPage) {
     const response = await fetchWithCredentials(`https://apis.naver.com/cafe-web/cafe2/ArticleList.json?search.clubid=27842958&search.menuid=${menuId}&search.page=${page}&search.perPage=${perPage}`);
@@ -41,7 +41,7 @@ export async function getArticleList(menuId, page, perPage) {
  * @param {string} query 검색어
  * @param {string|number} searchBy 검색 기준 (0: 게시글, 1: 제목, 3: 글 작성자, 4: 댓글 내용, 5: 댓글 작성자)
  * @param {string} sortBy 정렬 기준 (date: 최신순, sim: 정확도순)
- * @returns {Promise<object>} 게시글 검색 목록
+ * @returns {Promise<object[]>} 게시글 검색 목록
  */
 export async function getArticleSearchList(menuId, page, perPage, query, searchBy, sortBy) {
     const response = await fetchWithCredentials(`https://apis.naver.com/cafe-web/cafe-mobile/CafeMobileWebArticleSearchListV3?cafeId=27842958&menuId=${menuId}&query=${query}&searchBy=${searchBy}&sortBy=${sortBy}&page=${page}&perPage=${perPage}&adUnit=MW_CAFE_BOARD`);
@@ -54,7 +54,7 @@ export async function getArticleSearchList(menuId, page, perPage, query, searchB
  * 베스트 게시글 목록을 가져옵니다.
  * @param {string} type 종류 (comment: 댓글, likeIt: 좋아요)
  * @param {string} period 기간 (week: 일주일, month: 한 달, whole: 전체)
- * @returns {Promise<object>} 베스트 게시글 목록
+ * @returns {Promise<object[]>} 베스트 게시글 목록
  */
 export async function getBestArticleList(type, period) {
     const response = await fetchWithCredentials(`https://apis.naver.com/cafe-web/cafe2/BestArticleListV2.json?cafeId=27842958&type=${type}&period=${period}&adUnit=MW_CAFE_BOARD`);
@@ -65,7 +65,7 @@ export async function getBestArticleList(type, period) {
 
 /**
  * 차단 멤버 목록을 가져옵니다.
- * @returns {Promise<object>} 차단 멤버 목록
+ * @returns {Promise<string[]>} 차단 멤버 목록
  */
 export async function getBlockMemberList() {
     const response = await fetchWithCredentials('https://apis.naver.com/cafe-web/cafe-cafeinfo-api/v1.0/cafes/27842958/block-members');
@@ -79,7 +79,7 @@ export async function getBlockMemberList() {
  * @param {string} memberId 멤버 아이디
  * @param {string|number} page 페이지
  * @param {string|number} perPage 페이지당 게시글 개수
- * @returns {Promise<object>} 작성 글 목록
+ * @returns {Promise<object[]>} 작성 글 목록
  */
 export async function getCafeMemberArticleList(memberId, page, perPage) {
     const memberKey = await getMemberKeyByMemberId(memberId);
@@ -95,7 +95,7 @@ export async function getCafeMemberArticleList(memberId, page, perPage) {
  * @param {string} memberId 멤버 아이디
  * @param {string|number} page 페이지
  * @param {string|number} perPage 페이지당 게시글 개수
- * @returns {Promise<object>} 댓글 단 글 목록
+ * @returns {Promise<object[]>} 댓글 단 글 목록
  */
 export async function getCafeMemberCommentList(memberId, page, perPage) {
     const memberKey = await getMemberKeyByMemberId(memberId);
@@ -178,7 +178,7 @@ export async function getCommentList(articleId, page) {
 /**
  * 게시글의 모든 댓글 목록을 가져옵니다.
  * @param {string|number} articleId 게시글 아이디
- * @returns {Promise<object>} 모든 댓글 목록
+ * @returns {Promise<object[]>} 모든 댓글 목록
  */
 export async function getCommentListAll(articleId) {
     const commentList = await getCommentList(articleId, 1);
@@ -198,7 +198,7 @@ export async function getCommentListAll(articleId) {
  * 게시글의 최근 댓글 목록을 가져옵니다.
  * @param {string|number} articleId 게시글 아이디
  * @param {number} recentPageCount 가져올 최대 페이지 수
- * @returns {Promise<object>} 최근 댓글 목록
+ * @returns {Promise<object[]>} 최근 댓글 목록
  */
 export async function getCommentListRecent(articleId, recentPageCount) {
     const commentList = await getCommentList(articleId, 1);
@@ -280,7 +280,7 @@ export async function getNicknameByMemberId(memberId) {
 
 /**
  * 게시판 목록을 가져옵니다.
- * @returns {Promise<object>} 게시판 목록
+ * @returns {Promise<object[]>} 게시판 목록
  */
 export async function getMenuList() {
     const response = await fetchWithCredentials('https://apis.naver.com/cafe-web/cafe-cafeinfo-api/v1.0/cafes/27842958/editor/menus');
@@ -291,7 +291,7 @@ export async function getMenuList() {
 
 /**
  * 인기글 목록을 가져옵니다.
- * @returns {Promise<object>} 인기글 목록
+ * @returns {Promise<object[]>} 인기글 목록
  */
 export async function getPopularArticleList() {
     const response = await fetchWithCredentials('https://apis.naver.com/cafe-web/cafe2/WeeklyPopularArticleList.json?cafeId=27842958');
