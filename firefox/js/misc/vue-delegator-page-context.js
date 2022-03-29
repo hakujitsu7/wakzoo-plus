@@ -1,3 +1,7 @@
+/**
+ * 페이지 콘텍스트에서 작동하는 델리게이터 코드입니다.
+ * 확장 프로그램이 페이지 내에 존재하는 Vue.js 데이터에 접근할 수 있도록 해 줍니다.
+ */
 (function () {
     const vues = [];
 
@@ -32,8 +36,8 @@
         try {
             value = JSON.stringify(value);
         }
-        catch (error) {
-            value = JSON.stringify(error.toString());
+        catch {
+            value = undefined;
         }
 
         dispatchEvent(new CustomEvent('VueDelegator-GetPropertyOfVue-Response', {
@@ -61,8 +65,8 @@
         try {
             result = JSON.stringify(result);
         }
-        catch (error) {
-            result = JSON.stringify(error.toString());
+        catch {
+            result = undefined;
         }
 
         dispatchEvent(new CustomEvent('VueDelegator-CallMethodOfVue-Response', {

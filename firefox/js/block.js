@@ -1,5 +1,9 @@
 import { getBlockMemberList, getMemberKeyByMemberId } from './misc/cafe-apis.js';
 
+/**
+ * 차단한 멤버 키 리스트를 가져옵니다.
+ * @returns {Promise<string[]>} 차단한 멤버 키 리스트
+ */
 async function getBlockMemberKeyList() {
     const blockMemberList = await getBlockMemberList();
 
@@ -18,6 +22,9 @@ async function getBlockMemberKeyList() {
     return Object.values(blockMemberKeyTable);
 }
 
+/**
+ * 카페 메인 화면에서 차단한 멤버의 게시글을 가립니다.
+ */
 export async function blockArticlesInMyCafeIntro() {
     const blockMemberKeyList = await getBlockMemberKeyList();
 
@@ -33,6 +40,10 @@ export async function blockArticlesInMyCafeIntro() {
     }
 }
 
+/**
+ * 게시글 목록에서 차단한 멤버의 게시글을 가립니다.
+ * @param {string} boardType 현재 게시글 목록 형식
+ */
 export async function blockArticlesInArticleList(boardType) {
     const blockMemberKeyList = await getBlockMemberKeyList();
 
@@ -42,6 +53,7 @@ export async function blockArticlesInArticleList(boardType) {
             articleElementList[index] = targetArticle.closest('li,tr:not(:is(li,td) tr)');
         });
 
+        // 목록형
         if (boardType === 'L') {
             for (const articleElement of articleElementList) {
                 const href = articleElement.querySelector('a[href*="/ArticleRead.nhn"]').href;
@@ -52,6 +64,7 @@ export async function blockArticlesInArticleList(boardType) {
                     </td>`;
             }
         }
+        // 카드형
         else if (boardType === 'C') {
             for (const articleElement of articleElementList) {
                 const href = articleElement.querySelector('a[href*="/ArticleRead.nhn"]').href;
@@ -60,6 +73,7 @@ export async function blockArticlesInArticleList(boardType) {
                     `<a href="${href}" style="color: #676767;">차단한 멤버의 게시글입니다.</a>`;
             }
         }
+        // 앨범형, 동영상형
         else {
             for (const articleElement of articleElementList) {
                 articleElement.style.display = 'none';
@@ -68,6 +82,9 @@ export async function blockArticlesInArticleList(boardType) {
     }
 }
 
+/**
+ * 게시글 검색 목록에서 차단한 멤버의 게시글을 가립니다.
+ */
 export async function blockArticlesInArticleSearchList() {
     const blockMemberKeyList = await getBlockMemberKeyList();
 
@@ -88,6 +105,9 @@ export async function blockArticlesInArticleSearchList() {
     }
 }
 
+/**
+ * 베스트 게시글 목록에서 차단한 멤버의 게시글을 가립니다.
+ */
 export async function blockArticlesInBestArticleList() {
     const blockMemberKeyList = await getBlockMemberKeyList();
 

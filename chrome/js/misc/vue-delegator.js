@@ -40,10 +40,10 @@ export function getVue(selector) {
 }
 
 /**
- * Vue 객체의 프로퍼티를 가져옵니다.
+ * Vue 객체의 프로퍼티 값을 가져옵니다.
  * @param {number} vueId Vue 객체 아이디
  * @param  {...string} path 가져올 프로퍼티 경로
- * @returns {Promise<any>} 프로퍼티
+ * @returns {Promise<any>} 프로퍼티 값
  */
 export function getPropertyOfVue(vueId, ...path) {
     return new Promise(resolve => {

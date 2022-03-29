@@ -78,7 +78,7 @@ export async function getBlockMemberList() {
  * 작성 글 목록을 가져옵니다.
  * @param {string} memberId 멤버 아이디
  * @param {string|number} page 페이지
- * @param {string|number} perPage 페이지당 게시글 개수
+ * @param {string|number} perPage 한 페이지당 게시글 개수
  * @returns {Promise<object[]>} 작성 글 목록
  */
 export async function getCafeMemberArticleList(memberId, page, perPage) {
@@ -94,7 +94,7 @@ export async function getCafeMemberArticleList(memberId, page, perPage) {
  * 댓글 단 글 목록을 가져옵니다.
  * @param {string} memberId 멤버 아이디
  * @param {string|number} page 페이지
- * @param {string|number} perPage 페이지당 게시글 개수
+ * @param {string|number} perPage 한 페이지당 게시글 개수
  * @returns {Promise<object[]>} 댓글 단 글 목록
  */
 export async function getCafeMemberCommentList(memberId, page, perPage) {
@@ -109,7 +109,7 @@ export async function getCafeMemberCommentList(memberId, page, perPage) {
 /**
  * 좋아요한 글 목록을 가져옵니다.
  * @param {string} memberId 멤버 아이디
- * @param {string|number} perPage 페이지당 게시글 개수
+ * @param {string|number} perPage 한 페이지당 게시글 개수
  * @param {string|number} likeItTimestamp 검색 시작 타임스탬프
  * @returns {Promise<object>} 좋아요한 글 목록
  */
