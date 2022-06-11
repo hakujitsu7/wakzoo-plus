@@ -15,10 +15,8 @@ async function getBlockMemberKeyList() {
 
     // blockMemberKeyTable와 blockMemberKeyCache는 다음 구조를 가집니다.
     // {
-    //     <blockMember(1)Id: string>: <blockMember(1)Key: string>,
-    //     <blockMember(2)Id: string>: <blockMember(2)Key: string>,
+    //     <blockMemberId: string>: <blockMemberKey: string>,
     //     ...
-    //     <blockMember(n)Id: string>: <blockMember(n)Key: string>,
     // }
     // blockMemberKeyTable의 키의 개수는 해당 함수 호출 시점에 차단한 멤버의 수와 같고,
     // blockMemberKeyCache의 키의 개수는 이전에 마지막으로 해당 함수를 호출했을 때 차단했던 멤버의 수와 같습니다.

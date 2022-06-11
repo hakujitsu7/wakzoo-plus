@@ -6,6 +6,10 @@ import { getCafeMemberInfo } from './misc/cafe-apis.js';
 import { tryDecodeURIComponent, getUrlSearchParams, cp949ToUtf8InUrlSearchParams } from './misc/url.js';
 import { installVueDelegator } from './misc/vue-delegator.js';
 
+/**
+ * URL을 통해 현재 카페가 왁물원인지 확인합니다.
+ * @returns {boolean} 왁물원인지 여부
+ */
 function isWakzoo() {
     const signatures = [
         'steamindiegame',
@@ -15,6 +19,11 @@ function isWakzoo() {
     return signatures.some(signature => location.href.includes(signature));
 }
 
+/**
+ * 현재 카페 멤버로 로그인되어 있는지 확인합니다.  
+ * 만약 로그아웃 상태라면 false를 반환합니다.
+ * @returns {boolean} 카페 멤버인지 여부
+ */
 async function isCafeMember() {
     const cafeMemberInfo = await getCafeMemberInfo();
 
@@ -24,27 +33,33 @@ async function isCafeMember() {
 export async function main() {
     const cafeMember = await isCafeMember();
 
+    // 현재 카페가 왁물원인 경우에만 작동합니다.
     if (isWakzoo()) {
         const url = tryDecodeURIComponent(location.href);
 
+        // iframe을 사용하지 않는 경우
         if (window.self === window.top) {
+            // 카페 글쓰기
             if (url.includes('/articles/write') && cafeMember) {
                 installVueDelegator();
 
                 validate.addArticleValidation();
             }
         }
+        // iframe을 사용하는 경우
         else {
             browser.runtime.sendMessage({
                 type: 'set_subframe_url',
                 subframeUrl: location.href,
             });
 
+            // 카페 메인
             if (url.includes('/MyCafeIntro.nhn')) {
                 if (cafeMember) {
                     block.blockArticlesInMyCafeIntro();
                 }
             }
+            // 게시글 목록
             else if (url.includes('/ArticleList.nhn')) {
                 const urlSearchParams = getUrlSearchParams();
                 const boardType = urlSearchParams['search.boardtype'] || 'L';
@@ -61,6 +76,7 @@ export async function main() {
                     thumbnail.makeThumbnailsInArticleList(menuId, page, perPage);
                 }
             }
+            // 게시글 검색 목록
             else if (url.includes('/ArticleSearchList.nhn')) {
                 if (cafeMember) {
                     block.blockArticlesInArticleSearchList();
@@ -79,6 +95,7 @@ export async function main() {
 
                 thumbnail.makeThumbnailsInArticleSearchList(menuId, page, perPage, query, searchBy, sortBy);
             }
+            // 베스트 게시글 목록
             else if (url.includes('/BestArticleList.nhn')) {
                 if (cafeMember) {
                     block.blockArticlesInBestArticleList();
@@ -91,6 +108,7 @@ export async function main() {
 
                 thumbnail.makeThumbnailsInBestArticleList(type, period === 'commentcount' ? 'comment' : 'likeIt');
             }
+            // 게시글 읽기
             else if (url.includes('/ArticleRead.nhn') && cafeMember) {
                 installVueDelegator();
 
