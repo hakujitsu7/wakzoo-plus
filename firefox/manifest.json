@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "왁물원 플러스",
-    "version": "1.3",
+    "version": "1.4",
 
     "description": "더 편리한 왁물원을 위한 확장 프로그램입니다.",
     "icons": {
