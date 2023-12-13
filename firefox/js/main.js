@@ -1,10 +1,10 @@
 import * as block from './block.js';
 import * as thumbnail from './thumbnail.js';
-import * as validate from './validate.js';
+// import * as validate from './validate.js';
 
 import { getCafeMemberInfo } from './misc/cafe-apis.js';
 import { tryDecodeURIComponent, getUrlSearchParams, cp949ToUtf8InUrlSearchParams } from './misc/url.js';
-import { installVueDelegator } from './misc/vue-delegator.js';
+// import { installVueDelegator } from './misc/vue-delegator.js';
 
 /**
  * URL을 통해 현재 카페가 왁물원인지 확인합니다.
@@ -41,9 +41,9 @@ export async function main() {
         if (window.self === window.top) {
             // 카페 글쓰기
             if (url.includes('/articles/write') && cafeMember) {
-                installVueDelegator();
+                // installVueDelegator();
 
-                validate.addArticleValidation();
+                // validate.addArticleValidation();
             }
         }
         // iframe을 사용하는 경우
@@ -110,9 +110,9 @@ export async function main() {
             }
             // 게시글 읽기
             else if (url.includes('/ArticleRead.nhn') && cafeMember) {
-                installVueDelegator();
+                // installVueDelegator();
 
-                validate.addCommentValidation();
+                // validate.addCommentValidation();
             }
         }
     }
